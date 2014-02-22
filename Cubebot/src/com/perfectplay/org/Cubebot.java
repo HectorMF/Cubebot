@@ -2,10 +2,13 @@ package com.perfectplay.org;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -15,6 +18,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 
 public class Cubebot implements ApplicationListener {
 	public Environment environment;
@@ -23,15 +28,18 @@ public class Cubebot implements ApplicationListener {
 	public ModelBatch modelBatch;
 	public Model model;
 	public ModelInstance instance;
+	SpriteBatch spriteBatch;
+	Sound sound;
+	Texture speech;
 
 	@Override
 	public void create() {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-
+		speech = new Texture(Gdx.files.internal("speech.png"));
 		modelBatch = new ModelBatch();
-
+		spriteBatch = new SpriteBatch();
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
 		cam.lookAt(0,0,0);
@@ -47,6 +55,8 @@ public class Cubebot implements ApplicationListener {
         
         camController = new CameraInputController(cam);
         Gdx.input.setInputProcessor(camController);
+        sound = Gdx.audio.newSound(Gdx.files.internal("boink.mp3"));
+        sound.play(1.0f);
 	}
 
 	@Override
@@ -54,11 +64,16 @@ public class Cubebot implements ApplicationListener {
 		camController.update();
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClearColor(.5f, .8f, 1, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
- 
+        Quaternion q = new Quaternion();
+        System.out.println(cam.combined.getRotation(q).transform(new Vector3(1,1,1)));
         modelBatch.begin(cam);
         modelBatch.render(instance, environment);
         modelBatch.end();
+        spriteBatch.begin();
+        spriteBatch.draw(speech, 250, 170);
+        spriteBatch.end();
 	}
 
 	@Override
