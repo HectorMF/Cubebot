@@ -37,7 +37,25 @@ public class MenuScreen implements Screen
                 game.setScreen(new TutorialScreen(game));
             }
         });
-        table.add(tutorialButton).width(100);
+        table.add(tutorialButton).width(100).padBottom(5);
+        table.row();
+        
+        TextButton highScores = new TextButton("High Scores", game.skin);
+        highScores.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new SettingScreen(game));
+            }
+        });
+        table.add(highScores).width(100).padBottom(5);
+        
+        table.row();
+        TextButton settings = new TextButton("Settings", game.skin);
+        settings.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new SettingScreen(game));
+            }
+        });
+        table.add(settings).width(100).padBottom(5);
         stage.addActor(table);
 
     }
