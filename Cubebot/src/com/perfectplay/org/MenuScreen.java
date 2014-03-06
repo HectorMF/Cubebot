@@ -4,7 +4,9 @@ package com.perfectplay.org;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -19,9 +21,16 @@ public class MenuScreen implements Screen
         this.game = game;
         this.stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+        int width = 200;
+        int height = 50;
+        
+        Image logo = new Image(new Texture(Gdx.files.internal("Logo.png")));
         
         Table table = new Table();
+
         table.setFillParent(true);
+        table.add(logo);
+        table.row();
         TextButton playButton = new TextButton("Play", game.skin);
         playButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -29,7 +38,7 @@ public class MenuScreen implements Screen
             }
         });
         
-        table.add(playButton).width(100).padBottom(5);
+        table.add(playButton).width(width).height(height).padBottom(5);
         table.row();
         TextButton tutorialButton = new TextButton("Tutorial", game.skin);
         tutorialButton.addListener(new ClickListener() {
@@ -37,7 +46,7 @@ public class MenuScreen implements Screen
                 game.setScreen(new TutorialScreen(game));
             }
         });
-        table.add(tutorialButton).width(100).padBottom(5);
+        table.add(tutorialButton).width(width).height(height).padBottom(5);
         table.row();
         
         TextButton highScores = new TextButton("High Scores", game.skin);
@@ -46,7 +55,7 @@ public class MenuScreen implements Screen
                 game.setScreen(new SettingScreen(game));
             }
         });
-        table.add(highScores).width(100).padBottom(5);
+        table.add(highScores).width(width).height(height).padBottom(5);
         
         table.row();
         TextButton settings = new TextButton("Settings", game.skin);
@@ -55,7 +64,15 @@ public class MenuScreen implements Screen
                 game.setScreen(new SettingScreen(game));
             }
         });
-        table.add(settings).width(100).padBottom(5);
+        table.add(settings).width(width).height(height).padBottom(5);
+        table.row();
+        TextButton quit = new TextButton("Quit", game.skin);
+        quit.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+        table.add(quit).width(width).height(height).padBottom(5);
         stage.addActor(table);
 
     }

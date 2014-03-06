@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen{
@@ -104,8 +105,7 @@ public class GameScreen implements Screen{
 		 assets.get("Wood/Diffuse.jpg",Texture.class).setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		 ModelBuilder modelBuilder = new ModelBuilder();
 		 ModelInstance instance = new ModelInstance(cube, 0, 0, 0);
-	 
-		 
+
 		 //create a model instance
 		for (int x =0; x <= 0; x+=2) {
 		      for (int z = 0; z<=0; z+=2) {
@@ -119,7 +119,12 @@ public class GameScreen implements Screen{
 		          TextureAttribute normal = new TextureAttribute(TextureAttribute.Normal, assets.get("Wood/Normal.jpg",Texture.class));
 		          TextureAttribute bump = new TextureAttribute(TextureAttribute.Bump, assets.get("Wood/Bump.jpg",Texture.class));
 		          ColorAttribute attr = ColorAttribute.createDiffuse((x+5f)/10f, (z+5f)/10f, 0, 1);
-		          
+		  	
+		        //  System.out.println( instance.getNode("Cube_001").parent = instance.getNode("Cube"));
+			//	instance.getNode("Cube_001").rotation.set(1, 2, 3, 4);
+				instance.getNode("Cube_001").translation.add(10);
+				instance.getNode("Cube_001").calculateTransforms(true);
+					System.out.println( instance.getNode("Cube_001"));
 		          //instance.materials.get(0).set(attr);
 		       //   instance.materials.get(0).set(diff);
 		        //  instance.materials.get(0).set(specular);
