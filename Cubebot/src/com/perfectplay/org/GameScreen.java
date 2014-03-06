@@ -119,12 +119,13 @@ public class GameScreen implements Screen{
 		          TextureAttribute normal = new TextureAttribute(TextureAttribute.Normal, assets.get("Wood/Normal.jpg",Texture.class));
 		          TextureAttribute bump = new TextureAttribute(TextureAttribute.Bump, assets.get("Wood/Bump.jpg",Texture.class));
 		          ColorAttribute attr = ColorAttribute.createDiffuse((x+5f)/10f, (z+5f)/10f, 0, 1);
-		  	
+		         
 		        //  System.out.println( instance.getNode("Cube_001").parent = instance.getNode("Cube"));
 			//	instance.getNode("Cube_001").rotation.set(1, 2, 3, 4);
-				instance.getNode("Cube_001").translation.add(10);
-				instance.getNode("Cube_001").calculateTransforms(true);
-					System.out.println( instance.getNode("Cube_001"));
+				//instance.getNode("Cube_001").translation.add(10);
+				
+			//	instance.getNode("Cube_001").calculateTransforms(true);
+				//	System.out.println( instance.getNode("Cube_001"));
 		          //instance.materials.get(0).set(attr);
 		       //   instance.materials.get(0).set(diff);
 		        //  instance.materials.get(0).set(specular);
