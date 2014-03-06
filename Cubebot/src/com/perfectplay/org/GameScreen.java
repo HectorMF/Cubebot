@@ -49,14 +49,14 @@ public class GameScreen implements Screen{
 		this.game = game;
 		
 		//set up camera, environment, and input
-	    //modelBatch = new ModelBatch();
+	    modelBatch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, .1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
          
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(10f, 10f, 10f);
-        cam.lookAt(0,0,0);
+        cam.position.set(30f, 20f, 10f);
+        cam.lookAt(0,10,0);
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
@@ -66,25 +66,25 @@ public class GameScreen implements Screen{
          
         //load in the file and store it in the asset manager
         assets = new AssetManager();
-        assets.load("BreastPiece.g3dj", Model.class);
+        assets.load("CubeBotTextured.g3dj", Model.class);
         assets.load("Wood/Diffuse.jpg",Texture.class);
         assets.load("Wood/Specular.jpg",Texture.class);
         assets.load("Wood/Normal.jpg",Texture.class);
         assets.load("Wood/Bump.jpg",Texture.class);
         assets.update(1000);
         
-		 Model cube = assets.get("BreastPiece.g3dj", Model.class);
+		// Model cube = assets.get("HeadPieceTextured.g3dj", Model.class);
 
-		 ModelInstance instance = new ModelInstance(cube, 0, 0, 0);
+		// ModelInstance instance = new ModelInstance(cube, 0, 0, 0);
 		
 	        String vert = Gdx.files.internal("wood.vertex.glsl").readString();
 	        String frag = Gdx.files.internal("wood.fragment.glsl").readString();
 	    
-	        shader = new DefaultShader(instance.getRenderable(new Renderable()), new Config(vert, frag));
-	        shader.init();
-	       
+	        //shader = new DefaultShader(instance.getRenderable(new Renderable()), new Config(vert, frag));
+	        //shader.init();
+	      //  modelBatch = new ModelBatch();
 
-	        modelBatch = new ModelBatch(new DefaultShaderProvider() {
+	       /* modelBatch = new ModelBatch(new DefaultShaderProvider() {
 	            @Override
 	            public Shader getShader(Renderable renderable) {
 	                return shader;
@@ -94,12 +94,12 @@ public class GameScreen implements Screen{
 	            public void dispose() {
 	                shader.dispose();
 	            }
-	        });
+	        });*/
         loading = true;
 	}
 
 	private void doneLoading() {
-		 Model cube = assets.get("BreastPiece.g3dj", Model.class);
+		 Model cube = assets.get("CubeBotTextured.g3dj", Model.class);
 		 assets.get("Wood/Diffuse.jpg",Texture.class).setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		 assets.get("Wood/Diffuse.jpg",Texture.class).setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		 ModelBuilder modelBuilder = new ModelBuilder();
@@ -107,8 +107,8 @@ public class GameScreen implements Screen{
 	 
 		 
 		 //create a model instance
-		for (int x = -5; x <= 5; x+=2) {
-		      for (int z = -5; z<=5; z+=2) {
+		for (int x =0; x <= 0; x+=2) {
+		      for (int z = 0; z<=0; z+=2) {
 		    	// cube = modelBuilder.createBox(2f, 2f, 1f,
 		    	//	      new Material(),
 		    	//	      Usage.Position | Usage.Normal | Usage.TextureCoordinates);
@@ -146,7 +146,7 @@ public class GameScreen implements Screen{
 	        modelBatch.begin(cam);
 	        
 	        for (ModelInstance instance : instances)
-	            modelBatch.render(instance, environment,shader);
+	            modelBatch.render(instance, environment);
 	        modelBatch.end();
 	        
 

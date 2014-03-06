@@ -12,6 +12,7 @@ public class Cubebot extends Game {
     public BitmapFont font;
     public Skin skin;
     public void create() {
+
         batch = new SpriteBatch();
         //Use LibGDX's default Arial font.
         font = new BitmapFont();

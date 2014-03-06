@@ -22,7 +22,9 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -70,6 +72,10 @@ public class TutorialScreen implements Screen{
 	    table.add(playButton).width(100).padLeft(10).padBottom(10);
 	    table.setClip(true);
 	    table.left().bottom();
+	    table.row();
+	    TextArea tArea = new TextArea("TEST",game.skin);
+	    tArea.setDisabled(true);
+	    table.add(tArea);
 	    stage.addActor(table);
 	        
 	        
