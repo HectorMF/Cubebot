@@ -34,6 +34,7 @@ public class MenuScreen implements Screen
         TextButton playButton = new TextButton("Play", game.skin);
         playButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+            	game.buttonPress.play();
                 game.setScreen(new GameScreen(game));
             }
         });
@@ -43,6 +44,7 @@ public class MenuScreen implements Screen
         TextButton tutorialButton = new TextButton("Tutorial", game.skin);
         tutorialButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+            	game.buttonPress.play();
                 game.setScreen(new TutorialScreen(game));
             }
         });

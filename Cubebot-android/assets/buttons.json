@@ -10,12 +10,12 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	dialogDim: { name: white, color: { r: 0, g: 0, b: 0, a: 0.45 } }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-	default: { down: default-round-down, up: default-round, over: default-round-large},
-	toggle: { down: default-round-down, checked: default-round-down, up: default-round}
+	default: { down: default-round-down, up: default-round, over: default-round-down},
+	toggle: { down: default-round-down, checked: default-round-down, up: default-round, over: default-round-down}
 },
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-	default: { down: default-round-down, up: default-round, font: default-font, fontColor: white, disabledFontColor: black},
-	toggle: { down: default-round-down, up: default-round, checked: default-round-down, font: default-font, fontColor: white, downFontColor: red }
+	default: { down: default-round-down, up: default-round, font: default-font, fontColor: white, disabledFontColor: black, over: default-round-hover},
+	toggle: { down: default-round-down, up: default-round, checked: default-round-down, font: default-font, fontColor: white, downFontColor: red, over: default-round-hover }
 },
 com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 	default-vertical: { handle: default-splitpane-vertical },
