@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -86,6 +87,40 @@ public class Cubebot {
 		instance.transform.rotate(new Quaternion(-.5f,-.5f,-.5f, .5f));
 		instances.put("RightFoot", instance);
 
+		FileHandle file = Gdx.files.internal("C:/Users/Chase Plante/Desktop/CubebotTest.txt");
+		String text = file.readString();
+		
+		while(text.length() > 0)
+		{
+			int time = Integer.parseInt(text.substring(0, text.indexOf("::")));
+			text = text.substring(text.indexOf("::") + 2);
+			Vector3 position = new Vector3();
+			position.x = Float.parseFloat(text.substring(0, text.indexOf(',')));
+			text = text.substring(text.indexOf(',') + 1);
+			position.y = Float.parseFloat(text.substring(0, text.indexOf(',')));
+			text = text.substring(text.indexOf(',') + 1);
+			position.z = Float.parseFloat(text.substring(0, text.indexOf("::")));
+			text = text.substring(text.indexOf("::") + 2);
+			Quaternion rotation = new Quaternion();
+			rotation.w = Float.parseFloat(text.substring(0, text.indexOf(',')));
+			text = text.substring(text.indexOf(',') + 1);
+			rotation.x = Float.parseFloat(text.substring(0, text.indexOf(',')));
+			text = text.substring(text.indexOf(',') + 1);
+			rotation.y = Float.parseFloat(text.substring(0, text.indexOf(',')));
+			text = text.substring(text.indexOf(',') + 1);
+			if(text.indexOf('\n') != -1)
+			{
+				rotation.z = Float.parseFloat(text.substring(0, text.indexOf('\n')));
+				text = text.substring(text.indexOf('\n') + 1);
+			}
+			else
+			{
+				rotation.z = Float.parseFloat(text);
+				text = "";
+			}
+							
+			System.out.println(time + " " + position + " " + rotation);
+		}
 
 		/*
 		instance = new ModelInstance(assets.get("Cubebot/Hand.g3dj", Model.class), 0, 0, 0);
