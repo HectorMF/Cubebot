@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 
 public class Cubebot {
 	private ModelBatch modelBatch;
@@ -76,16 +77,16 @@ public class Cubebot {
 		instances.put("Pelvis", instance);
 		
 		*/
-		instance = new ModelInstance(assets.get("Cubebot/Foot.g3dj", Model.class), 1, 1, 2);
-		instance.transform.set(new Quaternion(-.5f,-.5f,-.5f,.5f));
 		
+		instance = new ModelInstance(assets.get("Cubebot/Foot.g3dj", Model.class), 1, 1, 2);
+		instance.transform.rotate(new Quaternion(-.5f,-.5f,-.5f, .5f));
 		instances.put("LeftFoot", instance);
 		
 		instance = new ModelInstance(assets.get("Cubebot/Foot.g3dj", Model.class), 1, 1, -2);
-		instance.transform.set(new Quaternion(-.5f,-.5f,-.5f,.5f));
-		instance.calculateTransforms();
-		
-		System.out.println(instances.values().size());
+		instance.transform.rotate(new Quaternion(-.5f,-.5f,-.5f, .5f));
+		instances.put("RightFoot", instance);
+
+
 		/*
 		instance = new ModelInstance(assets.get("Cubebot/Hand.g3dj", Model.class), 0, 0, 0);
 		instances.put("Hand", instance);
