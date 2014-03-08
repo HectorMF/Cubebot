@@ -13,11 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MenuScreen implements Screen
 {
-	final Cubebot game;
+	final CubebotGame game;
 
     private Stage stage;
     
-    public MenuScreen(final Cubebot game) {
+    public MenuScreen(final CubebotGame game) {
         this.game = game;
         this.stage = new Stage();
         Gdx.input.setInputProcessor(stage);

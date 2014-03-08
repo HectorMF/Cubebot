@@ -27,9 +27,9 @@ public class HighScoreScreen implements Screen{
 	private int min;
 	private String scores = "";
 	private Stage stage;
-	private Cubebot game;
+	private CubebotGame game;
 
-	public HighScoreScreen(final Cubebot game){
+	public HighScoreScreen(final CubebotGame game){
 		this.game = game;
 		
 		highscores = Gdx.app.getPreferences("Highscores");

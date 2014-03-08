@@ -1,6 +1,6 @@
 package com.perfectplay.org.client;
 
-import com.perfectplay.org.Cubebot;
+import com.perfectplay.org.CubebotGame;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
@@ -14,6 +14,6 @@ public class GwtLauncher extends GwtApplication {
 
 	@Override
 	public ApplicationListener getApplicationListener () {
-		return new Cubebot();
+		return new CubebotGame();
 	}
 }

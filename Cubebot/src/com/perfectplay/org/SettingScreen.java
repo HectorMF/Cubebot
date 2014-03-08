@@ -4,7 +4,7 @@ import com.badlogic.gdx.Screen;
 
 public class SettingScreen implements Screen {
 
-	public SettingScreen(Cubebot game){
+	public SettingScreen(CubebotGame game){
 		
 	}
 	

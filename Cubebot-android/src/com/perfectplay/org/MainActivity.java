@@ -13,6 +13,6 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = true;
         
-        initialize(new Cubebot(), cfg);
+        initialize(new CubebotGame(), cfg);
     }
 }

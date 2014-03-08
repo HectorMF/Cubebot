@@ -29,7 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class TutorialScreen implements Screen{
-	final Cubebot game;
+	final CubebotGame game;
 	
 	public Environment environment;
 	public PerspectiveCamera cam;
@@ -41,7 +41,7 @@ public class TutorialScreen implements Screen{
 	Texture speech;
 	private Stage stage;
 	
-	public TutorialScreen(final Cubebot game){
+	public TutorialScreen(final CubebotGame game){
 		this.game = game;
 		InputMultiplexer inputMux = new InputMultiplexer();
 		environment = new Environment();
