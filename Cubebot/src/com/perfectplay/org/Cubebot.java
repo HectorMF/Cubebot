@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
@@ -56,8 +57,8 @@ public class Cubebot {
 		assets.load("Cubebot/Foot.g3dj", Model.class);
 		assets.load("Cubebot/Hand.g3dj", Model.class);
 		assets.load("Cubebot/Head.g3dj", Model.class);
-		assets.load("Cubebot/Leg.g3dj", Model.class);
-		assets.load("Cubebot/LowerArm.g3dj", Model.class);
+		assets.load("Cubebot/UpperLeg.g3dj", Model.class);
+		assets.load("Cubebot/LowerArmAndLeg.g3dj", Model.class);
 		assets.load("Cubebot/Pelvis.g3dj", Model.class);
 		assets.load("Cubebot/UpperArm.g3dj", Model.class);
 
@@ -66,27 +67,128 @@ public class Cubebot {
 
 	public void createBot() {
 		ModelInstance instance;
-		
+		Node node;
 		//body 
+		
 		/*
+		 * CHEST PIECE
+		 */
 		instance = new ModelInstance(assets.get("Cubebot/Chest.g3dj", Model.class), 0, 12.85f, 0);
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(0,0,1,0));
+		node.translation.set(0,0,12.85f);
+		node.scale.set(1,3,2);
+		//update the transforms
+		instance.calculateTransforms();
 		instances.put("Chest", instance);
+		
+		
+		/*
+		 * HEAD PIECE
+		 */
 		instance = new ModelInstance(assets.get("Cubebot/Head.g3dj", Model.class), 0, 16.55f, 0);
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(1,0,0,1));
+		node.translation.set(0,0, -.25f);
+		node.scale.set(1,.333f,.5f);
+		//update the transforms
+		node.parent = instances.get("Chest").nodes.get(0);
+		instance.calculateTransforms();
 		instances.put("Head", instance);
+		
+		
+		/*
+		 * PELVIS PIECE
+		 */
 		instance = new ModelInstance(assets.get("Cubebot/Pelvis.g3dj", Model.class), 0, 9.654f, 0);
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(1,0,0,1));
+		node.translation.set(0,0,0f);
+		node.scale.set(1,1,.5f);
+		//update the transforms
+		node.parent = instances.get("Chest").nodes.get(0);
+		instance.calculateTransforms();
 		instances.put("Pelvis", instance);
 		
-		*/
 		
-		instance = new ModelInstance(assets.get("Cubebot/Foot.g3dj", Model.class), 1, 1, 2);
-		instance.transform.rotate(new Quaternion(-.5f,-.5f,-.5f, .5f));
-		instances.put("LeftFoot", instance);
+		/*
+		 * RIGHT UPPER LEG
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/UpperLeg.g3dj", Model.class), 0, 9.654f, 0);
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(1,0,0,1));
+		node.translation.set(0,.5f,-3.2f);
+		node.scale.set(1,.5f,2.04f);
+		//update the transforms
+		node.parent = instances.get("Pelvis").nodes.get(0);
+		instance.calculateTransforms();
+		instances.put("RightUpperLeg", instance);
 		
-		instance = new ModelInstance(assets.get("Cubebot/Foot.g3dj", Model.class), 1, 1, -2);
-		instance.transform.rotate(new Quaternion(-.5f,-.5f,-.5f, .5f));
+		/*
+		 * LEFT UPPER LEG
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/UpperLeg.g3dj", Model.class), 0, 9.654f, 0);
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(new Vector3(0,-1,1),180));
+		node.translation.set(0,-.5f,-3.2f);
+		node.scale.set(1,.5f,2.04f);
+		//update the transforms
+		node.parent = instances.get("Pelvis").nodes.get(0);
+		instance.calculateTransforms();
+		instances.put("LeftUpperLeg", instance);
+		
+		
+		/*
+		 * LEFT LOWER LEG
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/LowerArmAndLeg.g3dj", Model.class), 0, 9.654f, 0);
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(new Vector3(.707f,0f,.707f),180));
+		node.translation.set(0,.33f,-1.81f);
+		node.scale.set(.67f,.74f,1.02f);
+		//update the transforms
+		node.parent = instances.get("LeftUpperLeg").nodes.get(0);
+		instance.calculateTransforms();
+		instances.put("LeftLowerLeg", instance);
+		
+		/*
+		 * Right LOWER LEG
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/LowerArmAndLeg.g3dj", Model.class), 0, 9.654f, 0);
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(new Vector3(.707f,0f,.707f),180));
+		node.translation.set(0,.33f,-1.81f);
+		node.scale.set(.67f,.74f,1.02f);
+		//update the transforms
+		node.parent = instances.get("RightUpperLeg").nodes.get(0);
+		instance.calculateTransforms();
+		instances.put("RightLowerLeg", instance);
+		
+		/*
+		 * RIGHT FOOT
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/Foot.g3dj", Model.class));
+		//get the actual foot from the entire model
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(-.5f,-.5f,.5f, .5f));
+		node.translation.set(0,-1.14f,1.02f);
+		node.scale.set(1,.6f,1.96f);
+		
+		node.parent = instances.get("RightLowerLeg").nodes.get(0);
+		//update the transforms
+		instance.calculateTransforms();
 		instances.put("RightFoot", instance);
 
 
+		
 		/*
 		instance = new ModelInstance(assets.get("Cubebot/Hand.g3dj", Model.class), 0, 0, 0);
 		instances.put("Hand", instance);
@@ -118,6 +220,7 @@ public class Cubebot {
 		modelBatch.begin(cam);
 		for (ModelInstance instance : instances.values()){
 			//System.out.println(instance);
+
 			modelBatch.render(instance, environment);
 		}
 		modelBatch.end();

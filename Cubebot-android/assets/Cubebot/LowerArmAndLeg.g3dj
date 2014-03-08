@@ -133,6 +133,20 @@
 					"type": "DIFFUSE"
 				}
 			]
+		},
+		{
+			"id": "None__Diffuse_jpg_000", 
+			"ambient": [ 1.000000,  1.000000,  1.000000], 
+			"diffuse": [ 0.800000,  0.800000,  0.800000], 
+			"emissive": [ 0.800000,  0.800000,  0.800000], 
+			"specular": [ 1.000000,  1.000000,  1.000000], 
+			"textures": [
+				{
+					"id": "Diffuse_jpg_000", 
+					"filename": "Diffuse.jpg", 
+					"type": "DIFFUSE"
+				}
+			]
 		}
 	], 
 	"nodes": [
@@ -143,22 +157,10 @@
 			"parts": [
 				{
 					"meshpartid": "shape1_part1", 
-					"materialid": "Material__Diffuse_jpg", 
+					"materialid": "None__Diffuse_jpg_000", 
 					"uvMapping": [[  0]]
 				}
 			]
-		}, 
-		{
-			"id": "Lamp", 
-			"rotation": [ 0.169076,  0.755880, -0.272171,  0.570948], 
-			"scale": [ 1.000000,  1.000000,  1.000000], 
-			"translation": [ 4.082939,  0.873062, -5.106286]
-		}, 
-		{
-			"id": "Camera", 
-			"rotation": [-0.210611,  0.905240, -0.089282,  0.358067], 
-			"scale": [ 1.000000,  1.000000,  1.000000], 
-			"translation": [ 7.481132,  5.343665,  6.507640]
 		}
 	], 
 	"animations": [
