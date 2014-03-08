@@ -187,8 +187,11 @@ public class Cubebot {
 		instance.calculateTransforms();
 		instances.put("RightFoot", instance);
 
+<<<<<<< HEAD
 
 		
+=======
+>>>>>>> 12607820501e44683f7fc027702c427468f6a17a
 		/*
 		instance = new ModelInstance(assets.get("Cubebot/Hand.g3dj", Model.class), 0, 0, 0);
 		instances.put("Hand", instance);
