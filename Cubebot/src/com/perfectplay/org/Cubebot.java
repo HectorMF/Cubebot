@@ -21,6 +21,7 @@ public class Cubebot extends Game {
         font = new BitmapFont();
         skin = new Skin(Gdx.files.internal("buttons.json"));
         buttonPress = Gdx.audio.newSound(Gdx.files.internal("button-press.mp3"));
+       
         this.setScreen(new MenuScreen(this));
     
     }

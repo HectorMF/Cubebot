@@ -23,6 +23,9 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
@@ -43,6 +46,7 @@ public class GameScreen implements Screen{
 	   public Array<ModelInstance> instances = new Array<ModelInstance>();
 	   public Environment environment;
 	   public boolean loading;
+	   AnimationController controller;
 
 	   public Shader shader;
 	    
@@ -105,7 +109,7 @@ public class GameScreen implements Screen{
 		 assets.get("Wood/Diffuse.jpg",Texture.class).setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		 ModelBuilder modelBuilder = new ModelBuilder();
 		 ModelInstance instance = new ModelInstance(cube, 0, 0, 0);
-
+		// instance.getAnimation("moveLeg").
 		 //create a model instance
 		for (int x =0; x <= 0; x+=2) {
 		      for (int z = 0; z<=0; z+=2) {
@@ -120,6 +124,25 @@ public class GameScreen implements Screen{
 		          TextureAttribute bump = new TextureAttribute(TextureAttribute.Bump, assets.get("Wood/Bump.jpg",Texture.class));
 		          ColorAttribute attr = ColorAttribute.createDiffuse((x+5f)/10f, (z+5f)/10f, 0, 1);
 		         
+		          controller = new AnimationController(instance);  
+		          // Pick the current animation by name
+		          controller.setAnimation("Default Take",1, new AnimationListener(){
+
+		              @Override
+		              public void onEnd(AnimationDesc animation) {
+		                  // this will be called when the current animation is done. 
+		                  // queue up another animation called "balloon". 
+		                  // Passing a negative to loop count loops forever.  1f for speed is normal speed.
+		                //  controller.queue("Default Take",-1,1f,null,0f);
+		              }
+
+		              @Override
+		              public void onLoop(AnimationDesc animation) {
+		                  // TODO Auto-generated method stub
+		                  
+		              }
+		              
+		          });
 		        //  System.out.println( instance.getNode("Cube_001").parent = instance.getNode("Cube"));
 			//	instance.getNode("Cube_001").rotation.set(1, 2, 3, 4);
 				//instance.getNode("Cube_001").translation.add(10);
@@ -144,7 +167,7 @@ public class GameScreen implements Screen{
 		   if (loading && assets.update())
 	            doneLoading();
 	        camController.update();
-	         
+	        controller.update(Gdx.graphics.getDeltaTime());
 	        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	        Gdx.gl.glClearColor(.5f, .8f, 1, 1);
 	        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

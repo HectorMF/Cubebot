@@ -31,6 +31,11 @@ public class MenuScreen implements Screen
         table.setFillParent(true);
         table.add(logo);
         table.row();
+        
+        /*
+         * Play Button
+         * 
+         */
         TextButton playButton = new TextButton("Play", game.skin);
         playButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -41,6 +46,11 @@ public class MenuScreen implements Screen
         
         table.add(playButton).width(width).height(height).padBottom(5);
         table.row();
+        
+        /*
+         * Tutorial Button
+         * 
+         */
         TextButton tutorialButton = new TextButton("Tutorial", game.skin);
         tutorialButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -51,15 +61,23 @@ public class MenuScreen implements Screen
         table.add(tutorialButton).width(width).height(height).padBottom(5);
         table.row();
         
+        /*
+         * High score Button
+         * 
+         */
         TextButton highScores = new TextButton("High Scores", game.skin);
         highScores.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingScreen(game));
+                game.setScreen(new HighScoreScreen(game));
             }
         });
         table.add(highScores).width(width).height(height).padBottom(5);
-        
         table.row();
+        
+        /*
+         * Setting Button
+         * 
+         */
         TextButton settings = new TextButton("Settings", game.skin);
         settings.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -68,6 +86,11 @@ public class MenuScreen implements Screen
         });
         table.add(settings).width(width).height(height).padBottom(5);
         table.row();
+        
+        /*
+         * Quit Button
+         * 
+         */
         TextButton quit = new TextButton("Quit", game.skin);
         quit.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
