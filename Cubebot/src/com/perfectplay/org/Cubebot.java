@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -15,11 +14,30 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 public class Cubebot {
+	public static final String Chest = "Chest";
+	public static final String Pelvis = "Pelvis";
+	public static final String Head = "Head";
+	
+	public static final String LeftUpperLeg = "LeftUpperLeg";
+	public static final String LeftLowerLeg = "LeftLowerLeg";
+	public static final String LeftFoot = "LeftFoot";
+	
+	public static final String LeftUpperArm = "LeftUpperArm";
+	public static final String LeftLowerArm = "LeftLowerArm";
+	public static final String LeftHand = "LeftHand";
+	
+	public static final String RightUpperLeg = "RightUpperLeg";
+	public static final String RightLowerLeg = "RightLowerLeg";
+	public static final String RightFoot = "RightFoot";
+	
+	public static final String RightUpperArm = "RightUpperArm";
+	public static final String RightLowerArm = "RightLowerArm";
+	public static final String RightHand = "RightHand";
+	
 	private ModelBatch modelBatch;
 	private AssetManager assets;
 	private HashMap<String, ModelInstance> instances;
@@ -178,20 +196,32 @@ public class Cubebot {
 		//get the actual foot from the entire model
 		node  = instance.nodes.get(0);
 		//set the rotation of the foot
-		node.rotation.mul(new Quaternion(-.5f,-.5f,.5f, .5f));
-		node.translation.set(0,-1.14f,1.02f);
-		node.scale.set(1,.6f,1.96f);
-		
+		node.rotation.mul(new Quaternion(0f,.707f,0,.707f));
+		node.translation.set(0,5.25f,1.02f);
+		node.scale.set(1,.6f,2.05f);
+	
 		node.parent = instances.get("RightLowerLeg").nodes.get(0);
 		//update the transforms
 		instance.calculateTransforms();
 		instances.put("RightFoot", instance);
-
-<<<<<<< HEAD
-
 		
-=======
->>>>>>> 12607820501e44683f7fc027702c427468f6a17a
+		/*
+		 * LEFT FOOT
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/Foot.g3dj", Model.class));
+		//get the actual foot from the entire model
+		node  = instance.nodes.get(0);
+		//set the rotation of the foot
+		node.rotation.mul(new Quaternion(0f,-.707f,0,.707f));
+		node.translation.set(0,5.25f,-1.02f);
+		node.scale.set(1,.6f,2.05f);
+	
+		node.parent = instances.get("LeftLowerLeg").nodes.get(0);
+		//update the transforms
+		instance.calculateTransforms();
+		instances.put("LeftFoot", instance);
+
+
 		/*
 		instance = new ModelInstance(assets.get("Cubebot/Hand.g3dj", Model.class), 0, 0, 0);
 		instances.put("Hand", instance);
@@ -230,6 +260,12 @@ public class Cubebot {
 
 	}
 
+	public Node getNode(String id){
+		if(instances.containsKey(id))
+			return instances.get(id).nodes.get(0);
+		return null;
+	}
+	
 	public void dispose() {
 		modelBatch.dispose();
 		instances.clear();
