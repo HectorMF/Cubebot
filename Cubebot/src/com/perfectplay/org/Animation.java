@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -11,13 +12,15 @@ public class Animation {
 	private int totalTime;
 	private boolean isAnimating;
 	private int frameIndex;
+	private Node node;
 	ArrayList<AnimationFrame> Frames;
 	
-	public Animation(String filepath)
+	public Animation(Node node, String filepath)
 	{
 		totalTime = 0;
 		isAnimating = false;
 		frameIndex = 0;
+		this.node = node;
 		
 		//FileHandle file = Gdx.files.internal("C:/Users/Chase Plante/Desktop/CubebotTest.txt");
 		FileHandle file = Gdx.files.internal(filepath);
