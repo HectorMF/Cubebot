@@ -38,8 +38,7 @@ public class Animation {
 					.parseFloat(text.substring(0, text.indexOf("::")));
 			text = text.substring(text.indexOf("::") + 2);
 			Quaternion rotation = new Quaternion();
-		
-		
+
 			rotation.x = Float.parseFloat(text.substring(0, text.indexOf(',')));
 			text = text.substring(text.indexOf(',') + 1);
 			rotation.y = Float.parseFloat(text.substring(0, text.indexOf(',')));
@@ -55,23 +54,30 @@ public class Animation {
 			}
 
 			AnimationFrame frame = new AnimationFrame(time, position, rotation);
-		
+
 			Frames.add(frame);
 		}
-		
+
 		forwardTimeline = Timeline.createSequence();
 		reverseTimeline = Timeline.createSequence();
-		ArrayList<Tween> tweens = new ArrayList<Tween>();
+		ArrayList<Timeline> tweens = new ArrayList<Timeline>();
 		for (int i = 0; i < Frames.size(); i++) {
 			float time = i - 1 < 0 ? Frames.get(i).time : Frames.get(i).time
 					- Frames.get(i - 1).time;
 
 			tweens.add(
 					0,
-					Tween.to(node, NodeAccessor.POSITION, time).targetRelative(
-							-Frames.get(i).position.x,
-							-Frames.get(i).position.y,
-							-Frames.get(i).position.z));
+					Timeline.createParallel()
+							.push(Tween.to(node, NodeAccessor.POSITION, time)
+									.targetRelative(
+											-Frames.get(i).position.x,
+											-Frames.get(i).position.y,
+											-Frames.get(i).position.z))
+							.push(Tween.to(node, NodeAccessor.ROTATION, time)
+									.targetRelative(
+											-Frames.get(i).rotation.x,
+											-Frames.get(i).rotation.y,
+											-Frames.get(i).rotation.z)));
 
 			Timeline temp = Timeline
 					.createParallel()
@@ -85,12 +91,11 @@ public class Animation {
 									Frames.get(i).rotation.x,
 									Frames.get(i).rotation.y,
 									Frames.get(i).rotation.z));
-
-			System.out.println(Frames.get(i).rotation.x +":"+ Frames.get(i).rotation.y +":"+ Frames.get(i).rotation.z);
+			
 			forwardTimeline.push(temp);
 		}
 
-		for (int i = Frames.size() - 1; i >= 0; i--) {
+		for (int i = 0; i < tweens.size(); i++) {
 			reverseTimeline.push(tweens.get(i));
 		}
 

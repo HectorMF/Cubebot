@@ -15,7 +15,7 @@ public class GameScreen implements Screen{
 		System.out.println(bot.getNode(Cubebot.Chest));
 		
 		animationManager.addAnimation("RotateBody", bot.getNode(Cubebot.Pelvis), "CubebotTest.txt");
-		animationManager.startAnimation("RotateBody", false);
+		animationManager.startAnimation("RotateBody", true);
 
 		time = 0;
 	}
