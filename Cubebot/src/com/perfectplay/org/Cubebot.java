@@ -256,7 +256,7 @@ public class Cubebot {
 		//get the actual foot from the entire model
 		node  = instance.nodes.get(0);
 		//set the rotation
-		node.rotation.mul(new Quaternion(0f,-.707f,0,.707f));
+		node.rotation.mul(new Quaternion(0,.707f,-.707f,0));
 		node.translation.set(0.01f,1.6f,2.2f);
 		node.scale.set(1f,.67f,.45f);
 		
