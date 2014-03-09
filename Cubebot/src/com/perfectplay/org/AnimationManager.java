@@ -6,55 +6,43 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 
 public class AnimationManager {
 	private HashMap<String, Animation> Animations;
-	
-	public AnimationManager()
-	{
-		Animations = new HashMap<String,Animation>();
+
+	public AnimationManager() {
+		Animations = new HashMap<String, Animation>();
 	}
-	
-	public void AddAnimation(String name, Animation animation)
-	{
+
+	public void addAnimation(String name, Animation animation) {
 		Animations.put(name, animation);
 	}
-	
-	public void AddAnimation(String name, Node node, String filepath)
-	{
+
+	public void addAnimation(String name, Node node, String filepath) {
 		Animations.put(name, new Animation(node, filepath));
 	}
-	
-	public void RemoveAnimation(String name)
-	{
+
+	public void removeAnimation(String name) {
 		Animations.remove(name);
 	}
-	
-	public void ReverseAnimation(String name)
-	{
-		Animations.get(name).isReverse = true;
-	}
-	
-	public void StartAnimation(String name)
-	{
+
+	public void startAnimation(String name, Boolean reverse) {
+		Animations.get(name).isReverse = reverse;
 		Animations.get(name).start();
 	}
-	
-	public void StopAnimation(String name)
-	{
-		Animations.get(name).stop();
+
+	public void pauseAnimation(String name) {
+		Animations.get(name).pause();
 	}
 	
-	public void RestartAnimation(String name)
-	{
+	public void resumeAnimation(String name) {
+		Animations.get(name).resume();
+	}
+
+	public void restartAnimation(String name) {
 		Animations.get(name).restart();
 	}
-	
-	public void ReverseAnimationTimeFlow(String name)
-	{
-		Animations.get(name).reverseTimeFlow();
-	}
-	
-	public void update(float delta)
-	{
-		for(Animation animation : Animations.values()){
+
+
+	public void update(float delta) {
+		for (Animation animation : Animations.values()) {
 			animation.update(delta);
 		}
 	}

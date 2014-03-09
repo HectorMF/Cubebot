@@ -13,8 +13,10 @@ public class GameScreen implements Screen{
 		this.bot = new Cubebot();
 		animationManager = new AnimationManager();
 		System.out.println(bot.getNode(Cubebot.Chest));
-		animationManager.AddAnimation("RotateBody", bot.getNode(Cubebot.Chest), "CubebotTest.txt");
-		animationManager.StartAnimation("RotateBody");
+		
+		animationManager.addAnimation("RotateBody", bot.getNode(Cubebot.Chest), "CubebotTest.txt");
+		animationManager.startAnimation("RotateBody", false);
+
 		time = 0;
 	}
 
@@ -23,7 +25,7 @@ public class GameScreen implements Screen{
 		bot.render();
 		time+= delta;
 		animationManager.update(delta);
-		//if(time >=5) animationManager.ReverseAnimation("RotateBody");
+		//if(time > 5) animationManager.ReverseAnimation("RotateBody");
 	}
 
 	@Override
