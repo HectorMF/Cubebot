@@ -34,6 +34,41 @@ public class AnimationManager {
 				}
 	}
 	
+	public void ReverseAnimation(String name)
+	{
+		int i;
+		
+		for(i=0; i<Animations.size(); i++)
+			if(Animations.get(i).name.toLowerCase().equals(name.toLowerCase()))
+			{
+				Animations.get(i).animation.isReverse = true;
+			}
+	}
+	
+	public void StartAnimation(String name)
+	{
+		int i;
+		
+		for(i=0; i<Animations.size(); i++)
+			if(Animations.get(i).name.toLowerCase().equals(name.toLowerCase()))
+				{
+					Animations.get(i).animation.start();
+				}
+	}
+	
+	public void StopAnimation(String name)
+	{
+		int i;
+		
+		for(i=0; i<Animations.size(); i++)
+			if(Animations.get(i).name.toLowerCase().equals(name.toLowerCase()))
+				{
+					Animations.get(i).animation.stop();
+				}
+	}
+	
+
+	
 	public void update(float delta)
 	{
 		int i;

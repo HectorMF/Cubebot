@@ -16,7 +16,7 @@ public class Animation {
 	private Node node;
 	ArrayList<AnimationFrame> Frames;
 	
-	private boolean isReverse;
+	public boolean isReverse;
 	
 	public Animation(Node node, String filepath)
 	{
@@ -113,7 +113,7 @@ public class Animation {
 				node.rotation.mul(Frames.get(frameIndex).inverseRotation);
 				node.calculateTransforms(true);
 
-				frameIndex ++;
+				frameIndex --;
 			}
 			else if(frameIndex >= Frames.size()) stop();
 		}

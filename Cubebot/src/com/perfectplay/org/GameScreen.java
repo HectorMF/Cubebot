@@ -5,15 +5,25 @@ import com.badlogic.gdx.Screen;
 public class GameScreen implements Screen{
 	final CubebotGame game;
 	private Cubebot bot;
+	private AnimationManager animationManager;
+	float time;
     
 	public GameScreen(final CubebotGame game){
 		this.game = game;
 		this.bot = new Cubebot();
+		animationManager = new AnimationManager();
+		System.out.println(bot.getNode(Cubebot.Chest));
+		animationManager.AddAnimation("RotateBody", bot.getNode(Cubebot.Chest), "C:/Users/Chase Plante/Desktop/CubebotTest.txt");
+		animationManager.StartAnimation("RotateBody");
+		time = 0;
 	}
 
 	@Override
 	public void render(float delta){
 		bot.render();
+		time+= delta;
+		animationManager.update(delta);
+		if(time >=5) animationManager.ReverseAnimation("RotateBody");
 	}
 
 	@Override
