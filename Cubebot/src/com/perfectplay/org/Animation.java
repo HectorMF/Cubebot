@@ -109,7 +109,8 @@ public class Animation {
 		if(!isReverse){
 			totalTime += delta;
 			startTime += delta;
-		}else
+		}
+		else
 			totalTime -= delta;
 		
 		if(!isReverse)
@@ -150,7 +151,7 @@ public class Animation {
 
 				frameIndex --;
 			}
-			else if(frameIndex >= Frames.size()) stop();
+			else if(frameIndex < 0) stop();
 		}
 		//node.translation.add(Frames.get(frameIndex).position);
 		//System.out.println(node.translation);
