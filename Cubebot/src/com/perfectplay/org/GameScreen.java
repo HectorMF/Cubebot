@@ -13,8 +13,8 @@ public class GameScreen implements Screen{
 		this.bot = new Cubebot();
 		animationManager = new AnimationManager();
 		System.out.println(bot.getNode(Cubebot.Chest));
-		animationManager.AddAnimation("RotateBody", bot.getNode(Cubebot.Chest), "CubebotTest.txt");
-		animationManager.StartAnimation("RotateBody");
+		//animationManager.AddAnimation("RotateBody", bot.getNode(Cubebot.Chest), "CubebotTest.txt");
+		//animationManager.StartAnimation("RotateBody");
 		time = 0;
 	}
 
