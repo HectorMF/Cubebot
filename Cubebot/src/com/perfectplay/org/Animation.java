@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -15,11 +16,14 @@ public class Animation {
 	private Node node;
 	ArrayList<AnimationFrame> Frames;
 	
+	private boolean isReverse;
+	
 	public Animation(Node node, String filepath)
 	{
 		Frames = new ArrayList<AnimationFrame>();
 		
 		totalTime = 0;
+		isReverse = false;
 		isAnimating = false;
 		frameIndex = 0;
 		this.node = node;
@@ -74,33 +78,60 @@ public class Animation {
 	
 	public void update(float delta)
 	{
-		totalTime += delta;
-		
 		if(!isAnimating) return;
 		
-		if(frameIndex < Frames.size() && Frames.get(frameIndex).time <= totalTime)
+		if(!isReverse)
+			totalTime += delta;
+		else
+			totalTime -= delta;
+		if(!isReverse)
 		{
-			node.translation.add(Frames.get(frameIndex).position);
-			node.rotation.mul(Frames.get(frameIndex).rotation);
-			node.calculateTransforms(true);
-			//node.move(Frames.get(frameIndex).position;
-			//node.rotate(Frames.get(frameIndex).rotation;
-			frameIndex ++;
+			if(frameIndex < Frames.size() && Frames.get(frameIndex).time <= totalTime)
+			{
+				node.translation.add(Frames.get(frameIndex).position);
+				node.rotation.mul(Frames.get(frameIndex).rotation);
+				node.calculateTransforms(true);
+
+				frameIndex ++;
+			}
+			else if(frameIndex >= Frames.size()) stop();
 		}
-		else if(frameIndex >= Frames.size()) stop();
-		
+		else
+		{
+			if(frameIndex > 0 && Frames.get(frameIndex).time >= totalTime)
+			{
+				node.translation.sub(Frames.get(frameIndex).position);
+				
+				if(Frames.get(frameIndex).inverseRotation.equals(new Quaternion()))
+				{
+					Matrix4 rotationMatrix = new Matrix4();
+					Frames.get(frameIndex).rotation.toMatrix(rotationMatrix.val);
+					rotationMatrix = rotationMatrix.inv();
+					Frames.get(frameIndex).inverseRotation = new Quaternion().setFromMatrix(rotationMatrix);
+				}
+				
+				node.rotation.mul(Frames.get(frameIndex).inverseRotation);
+				node.calculateTransforms(true);
+
+				frameIndex ++;
+			}
+			else if(frameIndex >= Frames.size()) stop();
+		}
+			
 	}
 	
 	private class AnimationFrame{
 		public float time;
 		public Vector3 position;
 		public Quaternion rotation;
+		public Quaternion inverseRotation;
 		
 		public AnimationFrame(float time, Vector3 pos, Quaternion rot)
 		{
 			this.time = time;
 			position = pos;
 			rotation = rot;
+			inverseRotation = new Quaternion();
 		}
 	}
 }
