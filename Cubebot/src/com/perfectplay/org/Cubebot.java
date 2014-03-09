@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -80,10 +81,11 @@ public class Cubebot {
 		assets.load("Cubebot/Pelvis.g3dj", Model.class);
 		assets.load("Cubebot/UpperArm.g3dj", Model.class);
 
-		loading = true;
+		while(!assets.update());
+		createBot();
 	}
 
-	public void createBot() {
+	private void createBot() {
 		ModelInstance instance;
 		Node node;
 
@@ -222,7 +224,7 @@ public class Cubebot {
 		//get the actual foot from the entire model
 		node  = instance.nodes.get(0);
 		//set the rotation of the foot
-		node.rotation.mul(new Quaternion(.707f,0, 0,.707f));
+		node.rotation.mul(new Quaternion(1,0, 0,0f));
 		node.translation.set(0,-1.8f,.57f);
 		node.scale.set(1,.43f,.7f);
 	
@@ -237,15 +239,31 @@ public class Cubebot {
 		instance = new ModelInstance(assets.get("Cubebot/LowerArmAndLeg.g3dj", Model.class));
 		//get the actual foot from the entire model
 		node  = instance.nodes.get(0);
-		//set the rotation of the foot
+		//set the rotation
 		node.rotation.mul(new Quaternion(0f,-.707f,0,.707f));
-		node.translation.set(0,-1.15f,-1.02f);
-		node.scale.set(1,.6f,2.05f);
-	
+		node.translation.set(0,-.02f,1.83f);
+		node.scale.set(1.18f,.71f,1.02f);
+		
 		node.parent = instances.get("LeftUpperArm").nodes.get(0);
 		//update the transforms
 		instance.calculateTransforms();
 		instances.put("LeftLowerArm", instance);
+		
+		/*
+		 * LEFT Hand
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/Hand.g3dj", Model.class));
+		//get the actual foot from the entire model
+		node  = instance.nodes.get(0);
+		//set the rotation
+		node.rotation.mul(new Quaternion(0f,-.707f,0,.707f));
+		node.translation.set(0.01f,1.6f,2.2f);
+		node.scale.set(1f,.67f,.45f);
+		
+		node.parent = instances.get("LeftLowerArm").nodes.get(0);
+		//update the transforms
+		instance.calculateTransforms();
+		instances.put("LeftHand", instance);
 		
 		
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.Head));
@@ -259,7 +277,7 @@ public class Cubebot {
 		getNode(Cubebot.LeftUpperLeg).children.add(getNode(Cubebot.LeftLowerLeg));
 		getNode(Cubebot.Pelvis).children.add(getNode(Cubebot.LeftUpperLeg));
 		
-	   // getNode(Cubebot.LeftLowerArm).children.add(getNode(Cubebot.LeftHand));
+	    getNode(Cubebot.LeftLowerArm).children.add(getNode(Cubebot.LeftHand));
 		getNode(Cubebot.LeftUpperArm).children.add(getNode(Cubebot.LeftLowerArm));
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.LeftUpperArm));
 		
@@ -292,25 +310,20 @@ public class Cubebot {
 	}
 
 	public void render() {
-		if (loading && assets.update())
-			createBot();
 		camController.update();
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(.5f, .8f, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
+		
 		modelBatch.begin(cam);
-		if(instances.containsKey("Chest"))
-		modelBatch.render(instances.get("Chest"), environment);
-		for (ModelInstance instance : instances.values()){
-			//System.out.println(instance);
-		//	modelBatch.render(instance, environment);
-			
-		}
-		modelBatch.end();
+		
+			modelBatch.render(instances.get("Chest"), environment);
+		
 
+		modelBatch.end();
+	
 	}
 
 	public Node getNode(String id){
