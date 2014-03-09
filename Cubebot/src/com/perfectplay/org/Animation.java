@@ -88,6 +88,20 @@ public class Animation {
 		isAnimating = false;
 	}
 	
+	public void restart()
+	{
+		isAnimating = true;
+		totalTime = 0;
+	}
+	
+	public void reverseTimeFlow()
+	{
+		float endTime = Frames.get(Frames.size()-1).time;
+		totalTime = endTime-totalTime;
+		if(totalTime < 0) totalTime = 0;
+		frameIndex = Frames.size()-frameIndex-1;
+	}
+	
 	public void update(float delta)
 	{
 		if(!isAnimating) return;

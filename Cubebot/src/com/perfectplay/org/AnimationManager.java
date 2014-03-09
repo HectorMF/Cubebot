@@ -42,6 +42,16 @@ public class AnimationManager {
 		Animations.get(name).stop();
 	}
 	
+	public void RestartAnimation(String name)
+	{
+		Animations.get(name).restart();
+	}
+	
+	public void ReverseAnimationTimeFlow(String name)
+	{
+		Animations.get(name).reverseTimeFlow();
+	}
+	
 	public void update(float delta)
 	{
 		for(Animation animation : Animations.values()){
