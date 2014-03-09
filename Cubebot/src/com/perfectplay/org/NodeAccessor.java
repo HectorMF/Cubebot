@@ -3,7 +3,6 @@ package com.perfectplay.org;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -60,7 +59,6 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			target.translation.set(newValues[0], newValues[1], newValues[2]);
 			break;
 		case ROTATION:
-			System.out.println(newValues[0] + " : " + newValues[1] + " : " + newValues[2]);
 			target.rotation.set(convertFromEuler(new Vector3(newValues[0], newValues[1],
 					newValues[2])));
 			break;
@@ -88,8 +86,7 @@ public class NodeAccessor implements TweenAccessor<Node> {
 		double x = c1c2 * s3 + s1s2 * c3;
 		double y = s1 * c2 * c3 + c1 * s2 * s3;
 		double z = c1 * s2 * c3 - s1 * c2 * s3;
-		return new Quaternion((float)x, (float)y, (float)z, (float)w);
-		
+		return new Quaternion((float)x, (float)y, (float)z, (float)w);	
 	}
 
 	public Vector3 convertToEuler(Quaternion q1) {
