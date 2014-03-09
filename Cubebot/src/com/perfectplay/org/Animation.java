@@ -76,6 +76,9 @@ public class Animation {
 		
 		if(frameIndex < Frames.size() && Frames.get(frameIndex).time <= totalTime)
 		{
+			node.translation.add(Frames.get(frameIndex).position);
+			node.rotation.mul(Frames.get(frameIndex).rotation);
+			node.calculateTransforms(true);
 			//node.move(Frames.get(frameIndex).position;
 			//node.rotate(Frames.get(frameIndex).rotation;
 			frameIndex ++;
