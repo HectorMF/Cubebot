@@ -38,8 +38,8 @@ public class Animation {
 					.parseFloat(text.substring(0, text.indexOf("::")));
 			text = text.substring(text.indexOf("::") + 2);
 			Quaternion rotation = new Quaternion();
-			rotation.w = Float.parseFloat(text.substring(0, text.indexOf(',')));
-			text = text.substring(text.indexOf(',') + 1);
+		
+		
 			rotation.x = Float.parseFloat(text.substring(0, text.indexOf(',')));
 			text = text.substring(text.indexOf(',') + 1);
 			rotation.y = Float.parseFloat(text.substring(0, text.indexOf(',')));
@@ -55,6 +55,7 @@ public class Animation {
 			}
 
 			AnimationFrame frame = new AnimationFrame(time, position, rotation);
+		
 			Frames.add(frame);
 		}
 		
@@ -81,12 +82,11 @@ public class Animation {
 									Frames.get(i).position.z))
 					.push(Tween.to(node, NodeAccessor.ROTATION, time)
 							.targetRelative(
-									Frames.get(i).rotation.w,
 									Frames.get(i).rotation.x,
 									Frames.get(i).rotation.y,
 									Frames.get(i).rotation.z));
 
-			System.out.println(Frames.get(i).rotation.w + " : " + Frames.get(i).rotation.x +":"+ Frames.get(i).rotation.y +":"+ Frames.get(i).rotation.z);
+			System.out.println(Frames.get(i).rotation.x +":"+ Frames.get(i).rotation.y +":"+ Frames.get(i).rotation.z);
 			forwardTimeline.push(temp);
 		}
 
