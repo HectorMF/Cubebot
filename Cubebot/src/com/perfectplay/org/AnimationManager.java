@@ -1,90 +1,52 @@
 package com.perfectplay.org;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.g3d.model.Node;
 
 public class AnimationManager {
-	private ArrayList<AnimationField> Animations;
+	private HashMap<String, Animation> Animations;
 	
 	public AnimationManager()
 	{
-		Animations = new ArrayList<AnimationField>();
+		Animations = new HashMap<String,Animation>();
 	}
 	
 	public void AddAnimation(String name, Animation animation)
 	{
-		Animations.add(new AnimationField(name,animation));
+		Animations.put(name, animation);
 	}
 	
 	public void AddAnimation(String name, Node node, String filepath)
 	{
-		Animations.add(new AnimationField(name, new Animation(node, filepath)));
+		Animations.put(name, new Animation(node, filepath));
 	}
 	
 	public void RemoveAnimation(String name)
 	{
-		int i;
-		
-		for(i=0; i<Animations.size(); i++)
-			if(Animations.get(i).name.toLowerCase().equals(name.toLowerCase()))
-				{
-					Animations.remove(i);
-					i--;
-				}
+		Animations.remove(name);
 	}
 	
 	public void ReverseAnimation(String name)
 	{
-		int i;
-		
-		for(i=0; i<Animations.size(); i++)
-			if(Animations.get(i).name.toLowerCase().equals(name.toLowerCase()))
-			{
-				Animations.get(i).animation.isReverse = true;
-			}
+		Animations.get(name).isReverse = true;
 	}
 	
 	public void StartAnimation(String name)
 	{
-		int i;
-		
-		for(i=0; i<Animations.size(); i++)
-			if(Animations.get(i).name.toLowerCase().equals(name.toLowerCase()))
-				{
-					Animations.get(i).animation.start();
-				}
+		Animations.get(name).start();
 	}
 	
 	public void StopAnimation(String name)
 	{
-		int i;
-		
-		for(i=0; i<Animations.size(); i++)
-			if(Animations.get(i).name.toLowerCase().equals(name.toLowerCase()))
-				{
-					Animations.get(i).animation.stop();
-				}
+		Animations.get(name).stop();
 	}
-	
-
 	
 	public void update(float delta)
 	{
 		int i;
 		
 		for(i=0; i<Animations.size(); i++)
-			Animations.get(i).animation.update(delta);
-	}
-	
-	private class AnimationField{
-		public String name;
-		public Animation animation;
-		
-		public AnimationField(String name, Animation animation)
-		{
-			this.name = name;
-			this.animation = animation;
-		}
+			((Animation)Animations.values().toArray()[i]).update(delta);
 	}
 }
