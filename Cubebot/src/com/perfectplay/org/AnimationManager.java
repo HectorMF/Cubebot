@@ -44,9 +44,8 @@ public class AnimationManager {
 	
 	public void update(float delta)
 	{
-		int i;
-		
-		for(i=0; i<Animations.size(); i++)
-			((Animation)Animations.values().toArray()[i]).update(delta);
+		for(Animation animation : Animations.values()){
+			animation.update(delta);
+		}
 	}
 }

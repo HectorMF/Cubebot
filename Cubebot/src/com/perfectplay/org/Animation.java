@@ -16,6 +16,12 @@ public class Animation {
 	private Node node;
 	ArrayList<AnimationFrame> Frames;
 	
+	private Vector3 startPosition;
+	private Vector3 endPosition;
+	
+	private float startTime;
+	private float endTime;
+	
 	public boolean isReverse;
 	
 	public Animation(Node node, String filepath)
@@ -69,6 +75,12 @@ public class Animation {
 	public void start()
 	{
 		isAnimating = true;
+		
+		startPosition = node.translation.cpy();
+		endPosition = node.translation.cpy().add(Frames.get(0).position);
+		
+		startTime = 0;
+		endTime = Frames.get(0).time;
 	}
 	
 	public void stop()
@@ -80,21 +92,30 @@ public class Animation {
 	{
 		if(!isAnimating) return;
 		
-		if(!isReverse)
+		if(!isReverse){
 			totalTime += delta;
-		else
+			startTime += delta;
+		}else
 			totalTime -= delta;
+		
 		if(!isReverse)
 		{
+			
 			if(frameIndex < Frames.size() && Frames.get(frameIndex).time <= totalTime)
 			{
-				node.translation.add(Frames.get(frameIndex).position);
-				node.rotation.mul(Frames.get(frameIndex).rotation);
-				node.calculateTransforms(true);
-
+				startPosition = node.translation.cpy();
+				endPosition = node.translation.cpy().add(Frames.get(frameIndex).position);
+				startTime = 0;
+				if(frameIndex - 1 >= 0)
+					endTime = Frames.get(frameIndex).time - Frames.get(frameIndex - 1).time;
+				else
+					endTime = Frames.get(1).time;
 				frameIndex ++;
 			}
-			else if(frameIndex >= Frames.size()) stop();
+			else if(frameIndex >= Frames.size()){ 
+				stop();
+				return;
+			}
 		}
 		else
 		{
@@ -117,6 +138,14 @@ public class Animation {
 			}
 			else if(frameIndex >= Frames.size()) stop();
 		}
+		//node.translation.add(Frames.get(frameIndex).position);
+		//System.out.println(node.translation);
+		node.translation.set(startPosition.cpy().slerp(endPosition, startTime/endTime));
+		
+		System.out.println("Start : " + startPosition + " : END : " + endPosition);
+		//node.rotation.mul(Frames.get(frameIndex).rotation);
+		node.calculateTransforms(true);
+
 			
 	}
 	
