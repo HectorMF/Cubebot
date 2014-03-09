@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 public class Animation {
-	private int totalTime;
+	private float totalTime;
 	private boolean isAnimating;
 	private int frameIndex;
 	private Node node;
@@ -17,6 +17,8 @@ public class Animation {
 	
 	public Animation(Node node, String filepath)
 	{
+		Frames = new ArrayList<AnimationFrame>();
+		
 		totalTime = 0;
 		isAnimating = false;
 		frameIndex = 0;
@@ -28,7 +30,7 @@ public class Animation {
 		
 		while(text.length() > 0)
 		{
-			int time = Integer.parseInt(text.substring(0, text.indexOf("::")));
+			float time = Float.parseFloat(text.substring(0, text.indexOf("::")));
 			text = text.substring(text.indexOf("::") + 2);
 			Vector3 position = new Vector3();
 			position.x = Float.parseFloat(text.substring(0, text.indexOf(',')));
@@ -70,8 +72,10 @@ public class Animation {
 		isAnimating = false;
 	}
 	
-	public void update()
+	public void update(float delta)
 	{
+		totalTime += delta;
+		
 		if(!isAnimating) return;
 		
 		if(frameIndex < Frames.size() && Frames.get(frameIndex).time <= totalTime)
@@ -88,11 +92,11 @@ public class Animation {
 	}
 	
 	private class AnimationFrame{
-		public int time;
+		public float time;
 		public Vector3 position;
 		public Quaternion rotation;
 		
-		public AnimationFrame(int time, Vector3 pos, Quaternion rot)
+		public AnimationFrame(float time, Vector3 pos, Quaternion rot)
 		{
 			this.time = time;
 			position = pos;
