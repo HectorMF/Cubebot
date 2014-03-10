@@ -66,6 +66,7 @@ public class GameScreen implements Screen {
 		//		bot.getNode(Cubebot.LeftLowerArm), "Animations/Wave.txt");
 		//animationManager.startAnimation("Rotate", false);
 		
+		/*//Right Limb Rotation
 		animationManager.addAnimation("Animation", 
 				bot.getNode(Cubebot.RightHand), "Animations/RightHandTurnForward.txt");
 		animationManager.startAnimation("Animation", false);
@@ -77,6 +78,13 @@ public class GameScreen implements Screen {
 		animationManager.addAnimation("Animation2", 
 				bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmTurnForward.txt");
 		animationManager.startAnimation("Animation2", false);
+		*/
+		
+		animationManager.addAnimation("AnimationHead", 
+				bot.getNode(Cubebot.Head), "Animations/HeadTurnForward.txt");
+		animationManager.startAnimation("AnimationHead", false);
+		
+		
 	}
 
 	@Override
