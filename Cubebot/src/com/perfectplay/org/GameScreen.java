@@ -55,6 +55,7 @@ public class GameScreen implements Screen {
 
 		animationManager = new AnimationManager();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
@@ -73,6 +74,9 @@ public class GameScreen implements Screen {
 
 
 
+=======
+		
+>>>>>>> 4e4ba3288d345614907107018e4e5fa4d5d321ca
 =======
 		
 >>>>>>> 4e4ba3288d345614907107018e4e5fa4d5d321ca
@@ -102,6 +106,7 @@ public class GameScreen implements Screen {
 		//		bot.getNode(Cubebot.Head), "Animations/HeadTurnForward.txt");
 		//animationManager.startAnimation("AnimationHead", false);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
@@ -120,6 +125,8 @@ public class GameScreen implements Screen {
 		animationManager.startAnimation("Fold");
 
 =======
+=======
+>>>>>>> 4e4ba3288d345614907107018e4e5fa4d5d321ca
 		
 		/*//Go To Cube Scripts*/
 		
@@ -150,6 +157,9 @@ public class GameScreen implements Screen {
 		animationManager.addAnimation("LeftHandCube", 
 				new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHandToCube.txt"));
 		animationManager.startAnimation("LeftHandCube", false);
+<<<<<<< HEAD
+>>>>>>> 4e4ba3288d345614907107018e4e5fa4d5d321ca
+=======
 >>>>>>> 4e4ba3288d345614907107018e4e5fa4d5d321ca
 	}
 
