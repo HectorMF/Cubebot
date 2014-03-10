@@ -2,8 +2,6 @@ package com.perfectplay.org;
 
 import java.util.HashMap;
 
-import com.badlogic.gdx.graphics.g3d.model.Node;
-
 public class AnimationManager {
 	private HashMap<String, Animation> Animations;
 
@@ -15,16 +13,12 @@ public class AnimationManager {
 		Animations.put(name, animation);
 	}
 
-	public void addAnimation(String name, Node node, String filepath) {
-		Animations.put(name, new Animation(node, filepath));
-	}
-
 	public void removeAnimation(String name) {
 		Animations.remove(name);
 	}
 
 	public void startAnimation(String name, Boolean reverse) {
-		Animations.get(name).isReverse = reverse;
+		Animations.get(name).setReverse(reverse);
 		Animations.get(name).start();
 	}
 

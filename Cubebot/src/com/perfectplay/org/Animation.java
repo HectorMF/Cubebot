@@ -16,8 +16,9 @@ public class Animation {
 	private Timeline forwardTimeline;
 	private Timeline reverseTimeline;
 
-	public boolean isReverse;
-
+	private boolean isReverse;
+	private float delay;
+	
 	public Animation(Node node, String filepath) {
 		ArrayList<AnimationFrame> Frames = new ArrayList<AnimationFrame>();
 
@@ -107,7 +108,31 @@ public class Animation {
 		else
 			reverseTimeline.start();
 	}
-
+	
+	public void setReverse(boolean bool){
+		this.isReverse = bool;
+	}
+	
+	public boolean isFinished(){
+		if (!isReverse)
+			return forwardTimeline.isFinished();
+		else
+			return reverseTimeline.isFinished();
+	}
+	
+	public Animation delay(float time){
+		forwardTimeline.delay(time);
+		reverseTimeline.delay(time);
+		return this;
+	}
+	
+	public Animation repeat(int times, float delay){
+		forwardTimeline.repeat(times, delay);
+		reverseTimeline.repeat(times, delay);
+		return this;
+	}
+	
+	
 	public void pause() {
 		if (!isReverse)
 			forwardTimeline.pause();
@@ -120,6 +145,10 @@ public class Animation {
 			forwardTimeline.resume();
 		else
 			reverseTimeline.resume();
+	}
+	
+	public float getDelay(){
+		return delay;
 	}
 
 	public void restart() {

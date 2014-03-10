@@ -33,8 +33,7 @@ public class GameScreen implements Screen {
 
 		table.add(resetButton).width(200).height(50).bottom().right()
 				.padRight(50).padBottom(20);
-		
-		
+
 		table.row();
 
 		TextButton menuButton = new TextButton("Menu", game.skin);
@@ -47,35 +46,37 @@ public class GameScreen implements Screen {
 
 		table.add(menuButton).width(200).height(50).bottom().right()
 				.padRight(50).padBottom(50);
-		
-		
+
 		InputMultiplexer inputMux = new InputMultiplexer();
 		inputMux.addProcessor(bot.getCamController());
 		inputMux.addProcessor(stage);
 		Gdx.input.setInputProcessor(inputMux);
 		stage.addActor(table);
-		
-		
-		animationManager = new AnimationManager();
-	
-		//animationManager.addAnimation("RotateBody", bot.getNode(Cubebot.Chest),
-		//		"Animations/CubebotTest.txt");
-		//animationManager.startAnimation("RotateBody", false);
 
-		//animationManager.addAnimation("Rotate",
-		//		bot.getNode(Cubebot.LeftLowerArm), "Animations/Wave.txt");
-		//animationManager.startAnimation("Rotate", false);
-		
-		animationManager.addAnimation("Animation", 
-				bot.getNode(Cubebot.RightHand), "Animations/RightHandTurnForward.txt");
+		animationManager = new AnimationManager();
+
+		// animationManager.addAnimation("RotateBody",
+		// bot.getNode(Cubebot.Chest),
+		// "Animations/CubebotTest.txt");
+		// animationManager.startAnimation("RotateBody", false);
+
+		// animationManager.addAnimation("Rotate",
+		// bot.getNode(Cubebot.LeftLowerArm), "Animations/Wave.txt");
+		// animationManager.startAnimation("Rotate", false);
+
+		animationManager.addAnimation("Animation",
+				new Animation(bot.getNode(Cubebot.RightHand),
+						"Animations/RightHandTurnForward.txt").delay(0));
 		animationManager.startAnimation("Animation", false);
-		
-		animationManager.addAnimation("Animation1", 
-				bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmTurnForward.txt");
+
+		animationManager.addAnimation("Animation1",
+				new Animation(bot.getNode(Cubebot.RightUpperArm),
+						"Animations/RightInnerArmTurnForward.txt").delay(3));
 		animationManager.startAnimation("Animation1", false);
-		
-		animationManager.addAnimation("Animation2", 
-				bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmTurnForward.txt");
+
+		animationManager.addAnimation("Animation2",
+				new Animation(bot.getNode(Cubebot.RightLowerArm),
+						"Animations/RightOuterArmTurnForward.txt").delay(5));
 		animationManager.startAnimation("Animation2", false);
 	}
 
