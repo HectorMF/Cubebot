@@ -54,6 +54,7 @@ public class GameScreen implements Screen {
 		stage.addActor(table);
 
 		animationManager = new AnimationManager();
+<<<<<<< HEAD
 
 
 		// animationManager.addAnimation("RotateBody",
@@ -73,6 +74,12 @@ public class GameScreen implements Screen {
 		animationManager.addAnimation("RotateBody", new Animation(bot.getNode(Cubebot.Chest),
 				"Animations/CubebotTest.txt"));
 		animationManager.startAnimation("RotateBody", false);
+=======
+		
+		//animationManager.addAnimation("RotateBody", bot.getNode(Cubebot.Chest),
+		//		"Animations/CubebotTest.txt");
+		//animationManager.startAnimation("RotateBody", false);
+>>>>>>> 4e4ba3288d345614907107018e4e5fa4d5d321ca
 
 		//animationManager.addAnimation("Rotate",
 		//		bot.getNode(Cubebot.LeftLowerArm), "Animations/Wave.txt");
@@ -81,26 +88,54 @@ public class GameScreen implements Screen {
 		/*//Right Limb Rotation
 		animationManager.addAnimation("Animation", 
 				bot.getNode(Cubebot.RightHand), "Animations/RightHandTurnForward.txt");
->>>>>>> df295bd3d8603eb690fc6c8bc5b8572eba16fb82
 		animationManager.startAnimation("Animation", false);
-
-		animationManager.addAnimation("Animation1",
-				new Animation(bot.getNode(Cubebot.RightUpperArm),
-						"Animations/RightInnerArmTurnForward.txt").delay(3));
+		
+		animationManager.addAnimation("Animation1", 
+				bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmTurnForward.txt");
 		animationManager.startAnimation("Animation1", false);
-
-		animationManager.addAnimation("Animation2",
-				new Animation(bot.getNode(Cubebot.RightLowerArm),
-						"Animations/RightOuterArmTurnForward.txt").delay(5));
+		
+		animationManager.addAnimation("Animation2", 
+				bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmTurnForward.txt");
 		animationManager.startAnimation("Animation2", false);
 		*/
 		
-	/*	animationManager.addAnimation("AnimationHead", 
-				bot.getNode(Cubebot.Head), "Animations/HeadTurnForward.txt");
-		animationManager.startAnimation("AnimationHead", false);*/
+		//animationManager.addAnimation("AnimationHead", 
+		//		bot.getNode(Cubebot.Head), "Animations/HeadTurnForward.txt");
+		//animationManager.startAnimation("AnimationHead", false);
 		
+		/*//Go To Cube Scripts*/
 		
+		animationManager.addAnimation("HeadCube", 
+				new Animation(bot.getNode(Cubebot.Head), "Animations/HeadGoToCube.txt"));
+		animationManager.startAnimation("HeadCube", false);
 		
+		animationManager.addAnimation("RightUpperArmCube", 
+				new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmGoToCube.txt"));
+		animationManager.startAnimation("RightUpperArmCube", false);
+		
+		animationManager.addAnimation("LeftUpperArmCube", 
+				new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftInnerArmGoToCube.txt"));
+		animationManager.startAnimation("LeftUpperArmCube", false);
+		
+		animationManager.addAnimation("RightLowerArmCube", 
+				new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmGoToCube.txt"));
+		animationManager.startAnimation("RightLowerArmCube", false);
+		
+		animationManager.addAnimation("LeftLowerArmCube", 
+				new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftOuterArmGoToCube.txt"));
+		animationManager.startAnimation("LeftLowerArmCube", false);
+		
+		animationManager.addAnimation("RightHandCube", 
+				new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHandToCube.txt"));
+		animationManager.startAnimation("RightHandCube", false);
+		
+<<<<<<< HEAD
+		
+=======
+		animationManager.addAnimation("LeftHandCube", 
+				new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHandToCube.txt"));
+		animationManager.startAnimation("LeftHandCube", false);
+>>>>>>> 4e4ba3288d345614907107018e4e5fa4d5d321ca
 	}
 
 	@Override
