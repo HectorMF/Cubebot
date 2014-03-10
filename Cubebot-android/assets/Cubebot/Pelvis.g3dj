@@ -113,14 +113,14 @@
 	], 
 	"materials": [
 		{
-			"id": "None__Diffuse_jpg", 
+			"id": "None__Diffuse_jpg_015", 
 			"ambient": [ 1.000000,  1.000000,  1.000000], 
 			"diffuse": [ 0.800000,  0.800000,  0.800000], 
 			"emissive": [ 0.800000,  0.800000,  0.800000], 
 			"specular": [ 1.000000,  1.000000,  1.000000], 
 			"textures": [
 				{
-					"id": "Diffuse_jpg", 
+					"id": "Diffuse_jpg_015", 
 					"filename": "Diffuse.jpg", 
 					"type": "DIFFUSE"
 				}
@@ -129,28 +129,15 @@
 	], 
 	"nodes": [
 		{
-			"id": "Cube", 
-			"rotation": [-0.707107,  0.000000,  0.000000,  0.707107], 
-			"scale": [ 1.000000,  1.000000,  1.000000], 
+			"id": "Pelvis", 
+			"translation": [ 0.000000,  0.000000,  9.654411], 
 			"parts": [
 				{
 					"meshpartid": "shape1_part1", 
-					"materialid": "None__Diffuse_jpg", 
+					"materialid": "None__Diffuse_jpg_015", 
 					"uvMapping": [[  0]]
 				}
 			]
-		}, 
-		{
-			"id": "Lamp", 
-			"rotation": [ 0.169076,  0.755880, -0.272171,  0.570948], 
-			"scale": [ 1.000000,  1.000000,  1.000000], 
-			"translation": [ 4.076245,  5.903862, -1.005454]
-		}, 
-		{
-			"id": "Camera", 
-			"rotation": [-0.210611,  0.905240, -0.089282,  0.358067], 
-			"scale": [ 1.000000,  1.000000,  1.000000], 
-			"translation": [ 7.481132,  5.343665,  6.507640]
 		}
 	], 
 	"animations": [

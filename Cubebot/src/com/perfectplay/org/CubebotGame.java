@@ -22,8 +22,8 @@ public class CubebotGame extends Game {
         batch = new SpriteBatch();
         //Use LibGDX's default Arial font.
         font = new BitmapFont();
-        skin = new Skin(Gdx.files.internal("buttons.json"));
-        buttonPress = Gdx.audio.newSound(Gdx.files.internal("button-press.mp3"));
+        skin = new Skin(Gdx.files.internal("GUI/buttons.json"));
+        buttonPress = Gdx.audio.newSound(Gdx.files.internal("GUI/Sounds/button-press.mp3"));
        
         this.setScreen(new MenuScreen(this));
         Tween.registerAccessor(Node.class, new NodeAccessor());

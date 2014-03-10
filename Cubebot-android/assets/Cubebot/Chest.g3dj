@@ -283,14 +283,14 @@
 	], 
 	"materials": [
 		{
-			"id": "None__Diffuse_jpg", 
+			"id": "None__Diffuse_jpg_015", 
 			"ambient": [ 1.000000,  1.000000,  1.000000], 
 			"diffuse": [ 0.800000,  0.800000,  0.800000], 
 			"emissive": [ 0.800000,  0.800000,  0.800000], 
 			"specular": [ 1.000000,  1.000000,  1.000000], 
 			"textures": [
 				{
-					"id": "Diffuse_jpg", 
+					"id": "Diffuse_jpg_015", 
 					"filename": "Diffuse.jpg", 
 					"type": "DIFFUSE"
 				}
@@ -299,13 +299,12 @@
 	], 
 	"nodes": [
 		{
-			"id": "Cube", 
-			"rotation": [-0.707107,  0.000000,  0.000000,  0.707107], 
-			"scale": [ 1.000000,  1.000000,  1.000000], 
+			"id": "Chest", 
+			"translation": [ 0.000000,  0.000000,  12.854411], 
 			"parts": [
 				{
 					"meshpartid": "shape1_part1", 
-					"materialid": "None__Diffuse_jpg", 
+					"materialid": "None__Diffuse_jpg_015", 
 					"uvMapping": [[  0]]
 				}
 			]

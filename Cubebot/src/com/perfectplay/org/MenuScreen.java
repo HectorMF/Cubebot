@@ -24,7 +24,7 @@ public class MenuScreen implements Screen
         int width = 200;
         int height = 50;
         
-        Image logo = new Image(new Texture(Gdx.files.internal("Logo.png")));
+        Image logo = new Image(new Texture(Gdx.files.internal("GUI/Logo.png")));
         
         Table table = new Table();
 
