@@ -54,6 +54,7 @@ public class GameScreen implements Screen {
 		stage.addActor(table);
 
 		animationManager = new AnimationManager();
+<<<<<<< HEAD
 
 		// animationManager.addAnimation("RotateBody",
 		// bot.getNode(Cubebot.Chest),
@@ -67,6 +68,20 @@ public class GameScreen implements Screen {
 		animationManager.addAnimation("Animation",
 				new Animation(bot.getNode(Cubebot.RightHand),
 						"Animations/RightHandTurnForward.txt").delay(0));
+=======
+	
+		//animationManager.addAnimation("RotateBody", bot.getNode(Cubebot.Chest),
+		//		"Animations/CubebotTest.txt");
+		//animationManager.startAnimation("RotateBody", false);
+
+		//animationManager.addAnimation("Rotate",
+		//		bot.getNode(Cubebot.LeftLowerArm), "Animations/Wave.txt");
+		//animationManager.startAnimation("Rotate", false);
+		
+		/*//Right Limb Rotation
+		animationManager.addAnimation("Animation", 
+				bot.getNode(Cubebot.RightHand), "Animations/RightHandTurnForward.txt");
+>>>>>>> df295bd3d8603eb690fc6c8bc5b8572eba16fb82
 		animationManager.startAnimation("Animation", false);
 
 		animationManager.addAnimation("Animation1",
@@ -78,6 +93,13 @@ public class GameScreen implements Screen {
 				new Animation(bot.getNode(Cubebot.RightLowerArm),
 						"Animations/RightOuterArmTurnForward.txt").delay(5));
 		animationManager.startAnimation("Animation2", false);
+		*/
+		
+		animationManager.addAnimation("AnimationHead", 
+				bot.getNode(Cubebot.Head), "Animations/HeadTurnForward.txt");
+		animationManager.startAnimation("AnimationHead", false);
+		
+		
 	}
 
 	@Override
