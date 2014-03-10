@@ -324,7 +324,7 @@ public class Cubebot {
 		Gdx.gl.glClearColor(.5f, .8f, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		if(test != null){
-			System.out.println("working");
+		//	System.out.println("working");
 			
 			renderer.setProjectionMatrix(cam.combined);
 			renderer.begin(ShapeType.Filled);
@@ -367,7 +367,7 @@ public class Cubebot {
 				test = boundingBox.getDimensions();
 				test2 = new Vector3();
 				node.transform.getTranslation(test2);
-				System.out.println(test2);
+				///System.out.println(test2);
 			}
 			if(Intersector.intersectRayBounds(ray, boundingBox, intersect)){
 				intersections.add(new Tuple<String,Vector3>(name, intersect.cpy()));

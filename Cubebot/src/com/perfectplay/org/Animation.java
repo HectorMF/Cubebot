@@ -72,22 +72,22 @@ public class Animation implements BaseAnimation {
 							.push(Tween.to(node, NodeAccessor.POSITION, time)
 									.targetRelative(-Frames.get(i).position.x,
 											-Frames.get(i).position.y,
-											-Frames.get(i).position.z))
+											-Frames.get(i).position.z).delay(0))
 							.push(Tween.to(node, NodeAccessor.ROTATION, time)
 									.targetRelative(-Frames.get(i).rotation.x,
 											-Frames.get(i).rotation.y,
-											-Frames.get(i).rotation.z)));
+											-Frames.get(i).rotation.z)).delay(0));
 
 			Timeline temp = Timeline
 					.createParallel()
 					.push(Tween.to(node, NodeAccessor.POSITION, time)
 							.targetRelative(Frames.get(i).position.x,
 									Frames.get(i).position.y,
-									Frames.get(i).position.z))
+									Frames.get(i).position.z).delay(0))
 					.push(Tween.to(node, NodeAccessor.ROTATION, time)
 							.targetRelative(Frames.get(i).rotation.x,
 									Frames.get(i).rotation.y,
-									Frames.get(i).rotation.z));
+									Frames.get(i).rotation.z).delay(0));
 
 			forwardTimeline.push(temp);
 		}
@@ -95,6 +95,9 @@ public class Animation implements BaseAnimation {
 		for (int i = 0; i < tweens.size(); i++) {
 			reverseTimeline.push(tweens.get(i));
 		}
+		
+		forwardTimeline.build();
+		reverseTimeline.build();
 
 	}
 
