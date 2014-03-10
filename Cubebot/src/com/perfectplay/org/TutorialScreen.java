@@ -47,7 +47,7 @@ public class TutorialScreen implements Screen{
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-		speech = new Texture(Gdx.files.internal("speech.png"));
+		speech = new Texture(Gdx.files.internal("GUI/speech.png"));
 		modelBatch = new ModelBatch();
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -88,7 +88,7 @@ public class TutorialScreen implements Screen{
         camController = new CameraInputController(cam);
         inputMux.addProcessor(camController);
         Gdx.input.setInputProcessor(inputMux);
-        sound = Gdx.audio.newSound(Gdx.files.internal("boink.mp3"));
+        sound = Gdx.audio.newSound(Gdx.files.internal("GUI/Sounds/boink.mp3"));
         sound.play(1.0f);
 
 	}

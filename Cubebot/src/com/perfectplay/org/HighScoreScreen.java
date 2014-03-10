@@ -56,7 +56,7 @@ public class HighScoreScreen implements Screen{
 		
 		table.row().expandX().fillX();
 		
-		Image logo = new Image(new Texture(Gdx.files.internal("highscore.png")));
+		Image logo = new Image(new Texture(Gdx.files.internal("GUI/highscore.png")));
         table.add(logo).top().width(1000).height(200);
         table.row().expand().fill();
 		TextArea tArea = new TextArea(scores, 	game.skin);
