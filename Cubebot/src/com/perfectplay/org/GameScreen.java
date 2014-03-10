@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
 		stage.addActor(table);
 
 		animationManager = new AnimationManager();
-<<<<<<< HEAD
+
 
 		// animationManager.addAnimation("RotateBody",
 		// bot.getNode(Cubebot.Chest),
@@ -68,7 +68,7 @@ public class GameScreen implements Screen {
 		animationManager.addAnimation("Animation",
 				new Animation(bot.getNode(Cubebot.RightHand),
 						"Animations/RightHandTurnForward.txt").delay(0));
-=======
+
 	
 		//animationManager.addAnimation("RotateBody", bot.getNode(Cubebot.Chest),
 		//		"Animations/CubebotTest.txt");
@@ -95,9 +95,9 @@ public class GameScreen implements Screen {
 		animationManager.startAnimation("Animation2", false);
 		*/
 		
-		animationManager.addAnimation("AnimationHead", 
+	/*	animationManager.addAnimation("AnimationHead", 
 				bot.getNode(Cubebot.Head), "Animations/HeadTurnForward.txt");
-		animationManager.startAnimation("AnimationHead", false);
+		animationManager.startAnimation("AnimationHead", false);*/
 		
 		
 	}
