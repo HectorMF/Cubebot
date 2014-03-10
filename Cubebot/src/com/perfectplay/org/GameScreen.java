@@ -55,45 +55,6 @@ public class GameScreen implements Screen {
 
 		animationManager = new AnimationManager();
 
-		// animationManager.addAnimation("RotateBody",
-		// bot.getNode(Cubebot.Chest),
-		// "Animations/CubebotTest.txt");
-		// animationManager.startAnimation("RotateBody", false);
-
-		// animationManager.addAnimation("Rotate",
-		// bot.getNode(Cubebot.LeftLowerArm), "Animations/Wave.txt");
-		// animationManager.startAnimation("Rotate", false);
-
-		animationManager.addAnimation("Animation",
-				new Animation(bot.getNode(Cubebot.RightHand),
-						"Animations/RightHandTurnForward.txt").delay(0));
-
-
-		//animationManager.addAnimation("RotateBody", bot.getNode(Cubebot.Chest),
-		//		"Animations/CubebotTest.txt");
-		//animationManager.startAnimation("RotateBody", false);
-
-		//animationManager.addAnimation("Rotate",
-		//		bot.getNode(Cubebot.LeftLowerArm), "Animations/Wave.txt");
-		//animationManager.startAnimation("Rotate", false);
-		
-		/*//Right Limb Rotation
-		animationManager.addAnimation("Animation", 
-				bot.getNode(Cubebot.RightHand), "Animations/RightHandTurnForward.txt");
-		animationManager.startAnimation("Animation", false);
-		
-		animationManager.addAnimation("Animation1", 
-				bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmTurnForward.txt");
-		animationManager.startAnimation("Animation1", false);
-		
-		animationManager.addAnimation("Animation2", 
-				bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmTurnForward.txt");
-		animationManager.startAnimation("Animation2", false);
-		*/
-		
-		//animationManager.addAnimation("AnimationHead", 
-		//		bot.getNode(Cubebot.Head), "Animations/HeadTurnForward.txt");
-		//animationManager.startAnimation("AnimationHead", false);
 
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
