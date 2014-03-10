@@ -57,7 +57,6 @@ public class Cubebot {
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		cam.position.set(15f, 0, 0f);
-		cam.rotate(new Vector3(1,0,0), 90);
 		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
 		cam.far = 300f;
@@ -106,6 +105,7 @@ public class Cubebot {
 		 */
 		instance = new ModelInstance(assets.get("Cubebot/Chest.g3dj", Model.class));
 		node  = instance.nodes.get(0);
+		node.rotation.set(new Vector3(1,0,0), -90);
 		node.translation.set(0,0,0);
 		node.scale.set(1,1,1);
 		instance.calculateTransforms();

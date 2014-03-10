@@ -97,8 +97,6 @@ public class HighScoreScreen implements Screen{
 	    stage.act(Gdx.graphics.getDeltaTime());
 	    Table.drawDebug(stage);
 	    stage.draw();
-
-	    //Table.drawDebug(stage);
 	}
 
 	@Override
@@ -107,28 +105,16 @@ public class HighScoreScreen implements Screen{
 	}
 
 	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void show() { }
 
 	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void hide() { }
 
 	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void pause() { }
 
 	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void resume() { }
 
 	@Override
 	public void dispose() {
