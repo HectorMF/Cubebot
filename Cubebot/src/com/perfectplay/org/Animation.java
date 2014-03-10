@@ -11,14 +11,14 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-public class Animation {
+public class Animation implements BaseAnimation {
 
 	private Timeline forwardTimeline;
 	private Timeline reverseTimeline;
 
 	private boolean isReverse;
 	private float delay;
-	
+
 	public Animation(Node node, String filepath) {
 		ArrayList<AnimationFrame> Frames = new ArrayList<AnimationFrame>();
 
@@ -70,29 +70,25 @@ public class Animation {
 					0,
 					Timeline.createParallel()
 							.push(Tween.to(node, NodeAccessor.POSITION, time)
-									.targetRelative(
-											-Frames.get(i).position.x,
+									.targetRelative(-Frames.get(i).position.x,
 											-Frames.get(i).position.y,
 											-Frames.get(i).position.z))
 							.push(Tween.to(node, NodeAccessor.ROTATION, time)
-									.targetRelative(
-											-Frames.get(i).rotation.x,
+									.targetRelative(-Frames.get(i).rotation.x,
 											-Frames.get(i).rotation.y,
 											-Frames.get(i).rotation.z)));
 
 			Timeline temp = Timeline
 					.createParallel()
 					.push(Tween.to(node, NodeAccessor.POSITION, time)
-							.targetRelative(
-									Frames.get(i).position.x,
+							.targetRelative(Frames.get(i).position.x,
 									Frames.get(i).position.y,
 									Frames.get(i).position.z))
 					.push(Tween.to(node, NodeAccessor.ROTATION, time)
-							.targetRelative(
-									Frames.get(i).rotation.x,
+							.targetRelative(Frames.get(i).rotation.x,
 									Frames.get(i).rotation.y,
 									Frames.get(i).rotation.z));
-			
+
 			forwardTimeline.push(temp);
 		}
 
@@ -108,31 +104,31 @@ public class Animation {
 		else
 			reverseTimeline.start();
 	}
-	
-	public void setReverse(boolean bool){
+
+	public Animation setReverse(boolean bool) {
 		this.isReverse = bool;
+		return this;
 	}
-	
-	public boolean isFinished(){
+
+	public boolean isFinished() {
 		if (!isReverse)
 			return forwardTimeline.isFinished();
 		else
 			return reverseTimeline.isFinished();
 	}
-	
-	public Animation delay(float time){
+
+	public Animation delay(float time) {
 		forwardTimeline.delay(time);
 		reverseTimeline.delay(time);
 		return this;
 	}
-	
-	public Animation repeat(int times, float delay){
+
+	public Animation repeat(int times, float delay) {
 		forwardTimeline.repeat(times, delay);
 		reverseTimeline.repeat(times, delay);
 		return this;
 	}
-	
-	
+
 	public void pause() {
 		if (!isReverse)
 			forwardTimeline.pause();
@@ -146,16 +142,9 @@ public class Animation {
 		else
 			reverseTimeline.resume();
 	}
-	
-	public float getDelay(){
-		return delay;
-	}
 
-	public void restart() {
-		if (!isReverse)
-			forwardTimeline.start();
-		else
-			reverseTimeline.start();
+	public float getDelay() {
+		return delay;
 	}
 
 	public void update(float delta) {
@@ -177,4 +166,5 @@ public class Animation {
 			this.rotation = rot;
 		}
 	}
+
 }

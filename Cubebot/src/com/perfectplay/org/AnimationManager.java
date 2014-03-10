@@ -3,13 +3,13 @@ package com.perfectplay.org;
 import java.util.HashMap;
 
 public class AnimationManager {
-	private HashMap<String, Animation> Animations;
+	private HashMap<String, BaseAnimation> Animations;
 
 	public AnimationManager() {
-		Animations = new HashMap<String, Animation>();
+		Animations = new HashMap<String, BaseAnimation>();
 	}
 
-	public void addAnimation(String name, Animation animation) {
+	public void addAnimation(String name, BaseAnimation animation) {
 		Animations.put(name, animation);
 	}
 
@@ -17,8 +17,7 @@ public class AnimationManager {
 		Animations.remove(name);
 	}
 
-	public void startAnimation(String name, Boolean reverse) {
-		Animations.get(name).setReverse(reverse);
+	public void startAnimation(String name) {
 		Animations.get(name).start();
 	}
 
@@ -30,13 +29,8 @@ public class AnimationManager {
 		Animations.get(name).resume();
 	}
 
-	public void restartAnimation(String name) {
-		Animations.get(name).restart();
-	}
-
-
 	public void update(float delta) {
-		for (Animation animation : Animations.values()) {
+		for (BaseAnimation animation : Animations.values()) {
 			animation.update(delta);
 		}
 	}
