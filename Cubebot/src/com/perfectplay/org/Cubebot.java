@@ -2,6 +2,7 @@ package com.perfectplay.org;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -19,15 +20,19 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 
 public class Cubebot {
-	Vector3 test;
-	Vector3 test2;
+	ArrayList<BoundingBox> position = new ArrayList<BoundingBox>();
+
 	ShapeRenderer renderer = new ShapeRenderer();
-	
+
 	public static final String Chest = "Chest";
 	public static final String Pelvis = "Pelvis";
 	public static final String Head = "Head";
@@ -51,12 +56,18 @@ public class Cubebot {
 	private ModelBatch modelBatch;
 	private AssetManager assets;
 	private HashMap<String, ModelInstance> instances;
+	private HashMap<String, BoundingBox> boundingBoxes;
 	private Environment environment;
 	private PerspectiveCamera cam;
 	private CameraInputController camController;
+	private ModelInstance pedestal;
 
 	public Cubebot() {
+		Bullet.init();
+		btCollisionObject body;
+		
 		instances = new HashMap<String, ModelInstance>();
+		boundingBoxes = new HashMap<String, BoundingBox>();
 		// set up camera, environment, and input
 		modelBatch = new ModelBatch();
 		environment = new Environment();
@@ -67,7 +78,7 @@ public class Cubebot {
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
-		cam.position.set(15f, 0, 0f);
+		cam.position.set(21f, 7.5f, 0f);
 		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
 		cam.far = 300f;
@@ -102,6 +113,11 @@ public class Cubebot {
 		assets.load("Cubebot/LeftHand.g3dj", Model.class);
 		assets.load("Cubebot/RightHand.g3dj", Model.class);
 
+		
+		/*
+		 * Environment
+		 */
+		assets.load("Cubebot/Cylinder.g3dj", Model.class);
 		while (!assets.update())
 			;
 		createBot();
@@ -122,7 +138,10 @@ public class Cubebot {
 		node.scale.set(1, 1, 1);
 		instance.calculateTransforms();
 		instances.put("Chest", instance);
-
+		instance = new ModelInstance(assets.get("Cubebot/Chest.g3dj",
+				Model.class));
+		
+		boundingBoxes.put("Chest", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * HEAD PIECE
 		 */
@@ -134,6 +153,7 @@ public class Cubebot {
 		node.parent = instances.get("Chest").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("Head", instance);
+		boundingBoxes.put("Head", node.calculateBoundingBox(new BoundingBox()));
 
 		/*
 		 * PELVIS PIECE
@@ -146,7 +166,7 @@ public class Cubebot {
 		node.parent = instances.get("Chest").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("Pelvis", instance);
-
+		boundingBoxes.put("Pelvis", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT UPPER LEG
 		 */
@@ -158,7 +178,7 @@ public class Cubebot {
 		node.parent = instances.get("Pelvis").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightUpperLeg", instance);
-
+		boundingBoxes.put("RightUpperLeg", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT UPPER LEG
 		 */
@@ -170,7 +190,7 @@ public class Cubebot {
 		node.parent = instances.get("Pelvis").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftUpperLeg", instance);
-
+		boundingBoxes.put("LeftUpperLeg", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT LOWER LEG
 		 */
@@ -182,7 +202,7 @@ public class Cubebot {
 		node.parent = instances.get("LeftUpperLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftLowerLeg", instance);
-
+		boundingBoxes.put("LeftLowerLeg", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * Right LOWER LEG
 		 */
@@ -194,6 +214,7 @@ public class Cubebot {
 		node.parent = instances.get("RightUpperLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightLowerLeg", instance);
+		boundingBoxes.put("RightLowerLeg", node.calculateBoundingBox(new BoundingBox()));
 
 		/*
 		 * RIGHT FOOT
@@ -206,7 +227,7 @@ public class Cubebot {
 		node.parent = instances.get("RightLowerLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightFoot", instance);
-
+		boundingBoxes.put("RightFoot", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT FOOT
 		 */
@@ -218,7 +239,7 @@ public class Cubebot {
 		node.parent = instances.get("LeftLowerLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftFoot", instance);
-
+		boundingBoxes.put("LeftFoot", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT UPPER ARM
 		 */
@@ -230,7 +251,7 @@ public class Cubebot {
 		node.parent = instances.get("Chest").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftUpperArm", instance);
-
+		boundingBoxes.put("LeftUpperArm", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT LOWER ARM
 		 */
@@ -242,7 +263,7 @@ public class Cubebot {
 		node.parent = instances.get("LeftUpperArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftLowerArm", instance);
-		
+		boundingBoxes.put("LeftLowerArm", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT Hand
 		 */
@@ -254,7 +275,7 @@ public class Cubebot {
 		node.parent = instances.get("LeftLowerArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftHand", instance);
-
+		boundingBoxes.put("LeftHand", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT UPPER ARM
 		 */
@@ -266,7 +287,7 @@ public class Cubebot {
 		node.parent = instances.get("Chest").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightUpperArm", instance);
-
+		boundingBoxes.put("RightUpperArm", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT LOWER ARM
 		 */
@@ -278,7 +299,7 @@ public class Cubebot {
 		node.parent = instances.get("RightUpperArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightLowerArm", instance);
-
+		boundingBoxes.put("RightLowerArm", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT HAND
 		 */
@@ -290,7 +311,8 @@ public class Cubebot {
 		node.parent = instances.get("RightLowerArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightHand", instance);
-
+		boundingBoxes.put("RightHand", node.calculateBoundingBox(new BoundingBox()));
+		
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.Head));
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.Pelvis));
 
@@ -313,30 +335,50 @@ public class Cubebot {
 		getNode(Cubebot.RightUpperArm).children
 				.add(getNode(Cubebot.RightLowerArm));
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.RightUpperArm));
+		
+		pedestal = new ModelInstance(assets.get("Cubebot/Cylinder.g3dj",
+				Model.class));
+		pedestal.transform.rotate(1, 0, 0, 90);
+		pedestal.transform.translate(0,0,15);
+		pedestal.transform.scale(2, 2,1);
 	}
 
 	public void render() {
 		camController.update();
 		cam.update();
-		pickNode(Gdx.input.getX(),Gdx.input.getY());
+		pickNode(Gdx.input.getX(), Gdx.input.getY());
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(.5f, .8f, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		if(test != null){
-		//	System.out.println("working");
-			
-			renderer.setProjectionMatrix(cam.combined);
-			renderer.begin(ShapeType.Filled);
-			renderer.setColor(1,1,0,1);
-			renderer.box(test2.x, test2.y, test2.z, test.x, test.y, test.z);
-			renderer.end();
+		// System.out.println("working");
+
+		renderer.setProjectionMatrix(cam.combined);
+		renderer.begin(ShapeType.Filled);
+
+		
+		
+		for(BoundingBox box : position){
+			renderer.setColor(new Random().nextFloat(), new Random().nextFloat(), 0,new Random().nextFloat());
+			renderer.box(box.getCenter().x, box.getCenter().y,
+					box.getCenter().z, box.getDimensions().x, box.getDimensions().y,
+					box.getDimensions().z);
 		}
-			
+		/*
+		for (int i = 0; i < position.size(); i++){
+			renderer.setColor(new Random().nextFloat(), new Random().nextFloat(), 0,new Random().nextFloat());
+			renderer.box(position.get(i).x, position.get(i).y,
+					position.get(i).z, dimension.get(i).x, dimension.get(i).y,
+					dimension.get(i).z);
+		}*/
+		renderer.end();
+
 		modelBatch.begin(cam);
+		modelBatch.render(pedestal, environment);
 		modelBatch.render(instances.get("Chest"), environment);
 		modelBatch.end();
 
+		position.clear();
 	}
 
 	public Node getNode(String id) {
@@ -352,36 +394,46 @@ public class Cubebot {
 	}
 
 	public String pickNode(int x, int y) {
+		
 		cam.update();
 		Ray ray = cam.getPickRay(x, y);
 		BoundingBox boundingBox = new BoundingBox();
 		Vector3 intersect = new Vector3();
-		ArrayList<Tuple<String, Vector3>> intersections = new ArrayList<Tuple<String, Vector3>> ();
-		for(String name : instances.keySet()){
+		ArrayList<Tuple<String, Vector3>> intersections = new ArrayList<Tuple<String, Vector3>>();
+		for (String name : instances.keySet()) {
 			ModelInstance node = instances.get(name);
 			Node node2 = instances.get(name).nodes.get(0);
-		
 			
-			node2.calculateBoundingBox(boundingBox).mul(node2.globalTransform);
-			if(name == "LeftHand"){
-				test = boundingBox.getDimensions();
-				test2 = new Vector3();
-				node.transform.getTranslation(test2);
-				///System.out.println(test2);
-			}
-			if(Intersector.intersectRayBounds(ray, boundingBox, intersect)){
-				intersections.add(new Tuple<String,Vector3>(name, intersect.cpy()));
+			Vector3 pos = new Vector3();
+		
+			node2.calculateWorldTransform().getTranslation(pos);
+			Matrix4 mat = new Matrix4();
+			mat.scale(1, 1, 1);
+			mat.rotate(node2.calculateLocalTransform().getRotation(new Quaternion()));
+			mat.translate(new Vector3(pos.x,pos.y,pos.z));
+			
+			///boundingBox
+			boundingBox = new BoundingBox(boundingBoxes.get(name)).mul(mat);
+			position.add(boundingBox);
+			
+				// /System.out.println(test2);
+			
+			if (Intersector.intersectRayBounds(ray, boundingBox, intersect)) {
+				intersections.add(new Tuple<String, Vector3>(name, intersect
+						.cpy()));
 			}
 		}
-		
-		if(intersections.size() > 0){
-			Tuple<String,Vector3> min = intersections.remove(0);
-			for(int i = 0; i < intersections.size(); i++){
-			//	System.out.println(intersections.get(i).x);
-				if(intersections.get(i).y.len2() < min.y.len2())
+
+		if (intersections.size() > 0) {
+			Tuple<String, Vector3> min = intersections.remove(0);
+			for (int i = 0; i < intersections.size(); i++) {
+				// System.out.println(intersections.get(i).x);
+				if (intersections.get(i).y.len2() < min.y.len2())
 					min = intersections.get(i);
 			}
-			
+			//if (min.x == "LeftHand")
+			//	System.out.println(min.x);
+
 			return min.x;
 		}
 
@@ -391,13 +443,14 @@ public class Cubebot {
 	public CameraInputController getCamController() {
 		return camController;
 	}
-	
-	private class Tuple<X, Y> { 
-		  public final X x; 
-		  public final Y y; 
-		  public Tuple(X x, Y y) { 
-		    this.x = x; 
-		    this.y = y; 
-		  } 
-		} 
+
+	private class Tuple<X, Y> {
+		public final X x;
+		public final Y y;
+
+		public Tuple(X x, Y y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
 }
