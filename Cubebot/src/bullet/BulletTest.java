@@ -50,7 +50,7 @@ public class BulletTest implements ApplicationListener, InputProcessor, GestureL
 	}
 
 	@Override
-	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+	public boolean touchDown (int x, int y, int count, int button) {
 		System.out.println("WORKING");
 		return false;
 	}

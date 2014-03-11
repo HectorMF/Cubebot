@@ -17,6 +17,7 @@
 package bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -28,7 +29,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 /** @author xoppa */
-public class RayCastTest extends BaseBulletTest {
+public class RayCastTest extends BaseBulletTest implements InputProcessor {
 	final int BOXCOUNT_X = 5;
 	final int BOXCOUNT_Y = 5;
 	final int BOXCOUNT_Z = 1;
@@ -40,7 +41,34 @@ public class RayCastTest extends BaseBulletTest {
 	ClosestRayResultCallback rayTestCB;
 	Vector3 rayFrom = new Vector3();
 	Vector3 rayTo = new Vector3();
+	
+	@Override
+	public boolean touchDown (int x, int y, int count, int button) {
+		System.out.println("WORKING2");
+		Ray ray = camera.getPickRay(x, y);
+		rayFrom.set(ray.origin);
+		rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
 
+		// Because we reuse the ClosestRayResultCallback, we need reset it's values
+		rayTestCB.setCollisionObject(null);
+		rayTestCB.setClosestHitFraction(1f);
+		rayTestCB.getRayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
+		rayTestCB.getRayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
+
+		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
+		
+		world.update();
+		if (rayTestCB.hasHit()) {
+			final btCollisionObject obj = rayTestCB.getCollisionObject();
+			if (!obj.isStaticOrKinematicObject()) {
+				final btRigidBody body = (btRigidBody)(obj);
+				body.activate();
+				body.applyCentralImpulse(Vector3.tmp2.set(ray.direction).scl(20f));
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public void create () {
 		super.create();
@@ -49,15 +77,19 @@ public class RayCastTest extends BaseBulletTest {
 		// Create the entities
 		world.add("ground", -7f, 0f, -7f).setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
 			0.25f + 0.5f * (float)Math.random(), 1f);
-
+		BulletEntity e;
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
-					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).setColor(0.5f + 0.5f * (float)Math.random(),
+					e = world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z);
+					e.setColor(0.5f + 0.5f * (float)Math.random(),
 						0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+					
 				}
 			}
 		}
+		
+		//System.out.println("WORKING2");
 		Gdx.input.setInputProcessor(this);
 		rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
 	}
@@ -71,29 +103,5 @@ public class RayCastTest extends BaseBulletTest {
 
 
 
-	@Override
-	public boolean touchDown (float x, float y, int count, int button) {
-		System.out.println("WORKING");
-		Ray ray = camera.getPickRay(x, y);
-		rayFrom.set(ray.origin);
-		rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
 
-		// Because we reuse the ClosestRayResultCallback, we need reset it's values
-		rayTestCB.setCollisionObject(null);
-		rayTestCB.setClosestHitFraction(1f);
-		rayTestCB.getRayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
-		rayTestCB.getRayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
-
-		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
-
-		if (rayTestCB.hasHit()) {
-			final btCollisionObject obj = rayTestCB.getCollisionObject();
-			if (!obj.isStaticOrKinematicObject()) {
-				final btRigidBody body = (btRigidBody)(obj);
-				body.activate();
-				body.applyCentralImpulse(Vector3.tmp2.set(ray.direction).scl(20f));
-			}
-		}
-		return true;
-	}
 }

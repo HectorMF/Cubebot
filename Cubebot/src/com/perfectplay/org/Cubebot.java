@@ -4,19 +4,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import bullet.BulletConstructor;
+import bullet.BulletWorld;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
@@ -28,7 +39,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 
-public class Cubebot {
+public class Cubebot implements InputProcessor{
 	ArrayList<BoundingBox> position = new ArrayList<BoundingBox>();
 
 	ShapeRenderer renderer = new ShapeRenderer();
@@ -61,10 +72,15 @@ public class Cubebot {
 	private PerspectiveCamera cam;
 	private CameraInputController camController;
 	private ModelInstance pedestal;
-
+	private ModelInstance skyBox;
+	private ModelBatch shadowBatch;
+	private DirectionalLight light;
+	private BulletWorld world;
+	
 	public Cubebot() {
 		Bullet.init();
 		btCollisionObject body;
+		world = new BulletWorld();
 		
 		instances = new HashMap<String, ModelInstance>();
 		boundingBoxes = new HashMap<String, BoundingBox>();
@@ -73,9 +89,11 @@ public class Cubebot {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f,
 				0.4f, 0.4f, .1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f,
-				-0.8f, -0.2f));
-
+		light = new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f,
+				-0.8f, -0.2f);
+		environment.add(light);
+		//environment.shadowMap = (DirectionalShadowLight)light;
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		cam.position.set(21f, 7.5f, 0f);
@@ -101,7 +119,7 @@ public class Cubebot {
 		 * Legs
 		 */
 		assets.load("Cubebot/RightUpperLeg.g3dj", Model.class);
-		assets.load("Cubebot/LeftUpperLeg.g3dj", Model.class);
+		assets.load("Cubebot/LeftUpperLeg.obj", Model.class);
 		assets.load("Cubebot/LowerLeg.g3dj", Model.class);
 		assets.load("Cubebot/Foot.g3dj", Model.class);
 
@@ -118,8 +136,11 @@ public class Cubebot {
 		 * Environment
 		 */
 		assets.load("Cubebot/Cylinder.g3dj", Model.class);
-		while (!assets.update())
-			;
+		assets.load("Cubebot/SpaceSphere.obj", Model.class);
+		final Model boxModel = new ModelBuilder().createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
+				ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), Usage.Position | Usage.Normal);
+		world.addConstructor("staticbox", new BulletConstructor(boxModel, 0f)); // mass = 0: static body
+		while (!assets.update());
 		createBot();
 	}
 
@@ -182,7 +203,7 @@ public class Cubebot {
 		/*
 		 * LEFT UPPER LEG
 		 */
-		instance = new ModelInstance(assets.get("Cubebot/LeftUpperLeg.g3dj",
+		instance = new ModelInstance(assets.get("Cubebot/LeftUpperLeg.obj",
 				Model.class));
 		node = instance.nodes.get(0);
 		node.translation.set(0, -1.5f, -3.2f);
@@ -336,14 +357,24 @@ public class Cubebot {
 				.add(getNode(Cubebot.RightLowerArm));
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.RightUpperArm));
 		
+		/*
+		 * Environment
+		 */
 		pedestal = new ModelInstance(assets.get("Cubebot/Cylinder.g3dj",
 				Model.class));
 		pedestal.transform.rotate(1, 0, 0, 90);
 		pedestal.transform.translate(0,0,15);
 		pedestal.transform.scale(2, 2,1);
+		
+		skyBox =  new ModelInstance(assets.get("Cubebot/SpaceSphere.obj",
+				Model.class));
+		//skyBox.transform.scale(2,10,10);
+		skyBox.transform.translate(0,0,0);
+		skyBox.calculateTransforms();
 	}
 
 	public void render() {
+		world.update();
 		camController.update();
 		cam.update();
 		pickNode(Gdx.input.getX(), Gdx.input.getY());
@@ -374,10 +405,21 @@ public class Cubebot {
 		renderer.end();
 
 		modelBatch.begin(cam);
+		modelBatch.render(skyBox, environment);
 		modelBatch.render(pedestal, environment);
 		modelBatch.render(instances.get("Chest"), environment);
 		modelBatch.end();
-
+		
+		modelBatch.begin(cam);
+		world.render(modelBatch, environment);
+		modelBatch.end();
+		/*
+		((DirectionalShadowLight)light).begin(Vector3.Zero, cam.direction);
+		shadowBatch.begin(((DirectionalShadowLight)light).getCamera());
+		world.render(shadowBatch, null);
+		shadowBatch.end();
+		((DirectionalShadowLight)light).end();
+		*/
 		position.clear();
 	}
 
@@ -452,5 +494,53 @@ public class Cubebot {
 			this.x = x;
 			this.y = y;
 		}
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

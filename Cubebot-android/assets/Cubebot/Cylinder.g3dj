@@ -249,7 +249,7 @@
 			"textures": [
 				{
 					"id": "Grey", 
-					"filename": "Diffuse.jpg", 
+					"filename": "grey.png", 
 					"type": "DIFFUSE"
 				}
 			]

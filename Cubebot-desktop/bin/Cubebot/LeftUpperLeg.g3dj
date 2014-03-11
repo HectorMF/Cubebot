@@ -159,11 +159,10 @@
 	], 
 	"materials": [
 		{
-			"id": "None__Diffuse_jpg_015", 
+			"id": "Material_001__Diffuse_jpg_015", 
 			"ambient": [ 1.000000,  1.000000,  1.000000], 
 			"diffuse": [ 0.800000,  0.800000,  0.800000], 
 			"emissive": [ 0.800000,  0.800000,  0.800000], 
-			"specular": [ 0.500000,  0.500000,  0.500000], 
 			"textures": [
 				{
 					"id": "Diffuse_jpg_015", 
@@ -180,7 +179,7 @@
 			"parts": [
 				{
 					"meshpartid": "shape1_part1", 
-					"materialid": "None__Diffuse_jpg_015", 
+					"materialid": "Material_001__Diffuse_jpg_015", 
 					"uvMapping": [[  0]]
 				}
 			]
