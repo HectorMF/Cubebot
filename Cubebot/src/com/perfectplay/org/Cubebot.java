@@ -1,21 +1,15 @@
 package com.perfectplay.org;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
-
-import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -23,15 +17,10 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -40,14 +29,12 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSetting;
-import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.perfectplay.org.bullet.BulletConstructor;
 import com.perfectplay.org.bullet.BulletEntity;
 import com.perfectplay.org.bullet.BulletWorld;
 
+@SuppressWarnings("deprecation")
 public class Cubebot implements InputProcessor {
 
 	public static final String Chest = "Chest";
@@ -100,13 +87,8 @@ public class Cubebot implements InputProcessor {
 	private ClosestRayResultCallback rayTestCB;
 	private Vector3 rayFrom = new Vector3();
 	private Vector3 rayTo = new Vector3();
-	private String selectedNode;
-	private Vector3 position;
 	
-	private btPoint2PointConstraint pickConstraint = null;
-	private btRigidBody pickedBody = null;
-	private float pickDistance;
-	private Vector3 tmpV = new Vector3();
+	private String selectedNode;
 	
 	public Cubebot() {
 		instances = new HashMap<String, ModelInstance>();
@@ -133,7 +115,6 @@ public class Cubebot implements InputProcessor {
 		Bullet.init();		
 		world = new BulletWorld();
 		collisionBoxes = new HashMap<String, BulletEntity>();
-		btCollisionObject body;
 		rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
 		
 		// load in the files and store it in the asset manager
@@ -543,26 +524,12 @@ public class Cubebot implements InputProcessor {
 
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		if (rayTestCB.hasHit()) {
+			if(instances.containsKey(selectedNode))
+				instances.get(selectedNode).materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE));
 			final btCollisionObject obj = rayTestCB.getCollisionObject();
 			final btRigidBody body = (btRigidBody)(obj);
-			tmpV.set(rayTestCB.getHitPointWorld().getFloats());
-			tmpV.mul(body.getCenterOfMassTransform().inv());
-			System.out.println(body.userData);
-			
-			pickConstraint = new btPoint2PointConstraint(body, tmpV);
-			btConstraintSetting setting = pickConstraint.getSetting();
-			setting.setImpulseClamp(30f);
-			setting.setTau(0.001f);
-			pickConstraint.setSetting(setting);
-			pickedBody = body;
-			((btDynamicsWorld)world.collisionWorld).addConstraint(pickConstraint);
-
-			pickDistance = Vector3.tmp.sub(cam.position).len();
 			selectedNode = (String) body.userData;
 			instances.get(selectedNode).materials.get(0).set(ColorAttribute.createDiffuse(Color.GREEN));
-			for(Attribute a : instances.get(selectedNode).materials.get(0)){
-				System.out.println(a.toString());
-			}
 		}
 		return true;
 	}
@@ -570,40 +537,12 @@ public class Cubebot implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		camHandler.touchUp(screenX,screenY,pointer,button);
-		selectedNode = "";
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
 		camHandler.touchDragged(x, y, pointer);
-		if (pickConstraint != null && instances.containsKey(selectedNode)) {
-			System.out.println("TEST");
-			Ray ray = cam.getPickRay(x, y);
-			Vector3.tmp.set(ray.direction).scl(pickDistance).add(cam.position);
-			pickConstraint.setPivotB(Vector3.tmp);
-			world.update();
-			Vector3 pos = new Vector3();
-			System.out.println(selectedNode);
-			//collisionBoxes.get(selectedNode).body.getWorldTransform().getTranslation(pos);
-			//Tween move = Tween.set(instances.get(selectedNode).nodes.get(0), NodeAccessor.POSITION).target(pos.x,pos.y,pos.z).start();
-			//move.update(10);
-			
-			
-		}
-		/*
-		if(instances.containsKey(selectedNode)){
-			System.out.println(x + " : " + y);
-			Tween move = Tween.set(instances.get(selectedNode).nodes.get(0), NodeAccessor.POSITION).target(x,y,0).start();
-			move.update(10);
-			
-			
-			instances.get(selectedNode).nodes.get(0).calculateTransforms(true);
-			//instances.get(selectedNode).nodes.get(0).globalTransform.rotate(new Vector3(1,0,0),12);
-			//instances.get(selectedNode).nodes.get(0).calculateTransforms(true);
-			System.out.println("AFTER" + instances.get(selectedNode).nodes.get(0).globalTransform);
-			//updateCollisionBoxes();
-		}*/
 		return false;
 	}
 
