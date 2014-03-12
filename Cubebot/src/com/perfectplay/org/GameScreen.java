@@ -33,7 +33,7 @@ public class GameScreen implements Screen {
 		});
 
 		table.add(resetButton).width(200).height(50).bottom().right()
-				.padRight(50).padBottom(20);
+				.padRight(50).padBottom(10);
 
 		table.row();
 
@@ -46,12 +46,66 @@ public class GameScreen implements Screen {
 		});
 
 		table.add(menuButton).width(200).height(50).bottom().right()
+				.padRight(50).padBottom(10);
+		
+		table.row();
+		
+		TextButton zeroButton = new TextButton("View 0 Degrees", game.skin);
+		zeroButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.buttonPress.play();
+				bot.camHandler.setRotation(0);
+			}
+		});
+
+		table.add(zeroButton).width(200).height(50).bottom().right()
+				.padRight(50).padBottom(10);
+
+		table.row();
+		
+		TextButton ninetyButton = new TextButton("View 90 Degrees", game.skin);
+		ninetyButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.buttonPress.play();
+				bot.camHandler.setRotation(90);
+			}
+		});
+
+		table.add(ninetyButton).width(200).height(50).bottom().right()
+				.padRight(50).padBottom(10);
+
+		table.row();
+		
+		TextButton oneEightyButton = new TextButton("View 180 Degrees", game.skin);
+		oneEightyButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.buttonPress.play();
+				bot.camHandler.setRotation(180);
+			}
+		});
+
+		table.add(oneEightyButton).width(200).height(50).bottom().right()
+				.padRight(50).padBottom(10);
+
+		table.row();
+		
+		TextButton twoSeventyButton = new TextButton("View 270 Degrees", game.skin);
+		twoSeventyButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.buttonPress.play();
+				bot.camHandler.setRotation(270);
+			}
+		});
+
+		table.add(twoSeventyButton).width(200).height(50).bottom().right()
 				.padRight(50).padBottom(50);
+
+		table.row();
 
 		InputMultiplexer inputMux = new InputMultiplexer();
 		//inputMux.addProcessor(bot);
 		
-		inputMux.addProcessor(bot.getCamController());
+		//inputMux.addProcessor(bot.getCamController());
 		inputMux.addProcessor(stage);
 		Gdx.input.setInputProcessor(inputMux);
 		stage.addActor(table);

@@ -12,9 +12,10 @@ public class CameraHandler {
 	public CameraHandler(PerspectiveCamera camera, int origRotation)
 	{
 		destinationRotation = origRotation;
-		exactRotation = origRotation;
 		rotation = origRotation;
 		cam = camera;
+		
+		exactRotation = rotation * (float)Math.PI / 180f;
 		
 		float x = 21 * (float) Math.cos((double) exactRotation);
 		float y = -3f;
@@ -39,14 +40,14 @@ public class CameraHandler {
 		if (!isActive) return;
 		
 		rotation ++;
+		
+		if(rotation == 360) rotation = 0;
 			
 		exactRotation = rotation * (float)Math.PI / 180f;
 		
 		float x = 21 * (float) Math.cos((double) exactRotation);
 		float y = -3f;
 		float z = 21 * (float) Math.sin((double) exactRotation);
-		
-		System.out.println(x + ", " + y + ", " + z);
 		
 		cam.position.set(x, y, z);
 		cam.lookAt(0, -3f, 0);
@@ -55,9 +56,10 @@ public class CameraHandler {
 		
 		cam.update();
 		
+		System.out.println(rotation + ", " + destinationRotation);
+		
 		if(rotation == destinationRotation)
-			destinationRotation+=90;
-			//isActive = false;
+			isActive = false;
 	}
 	
 }

@@ -71,6 +71,8 @@ public class Cubebot implements InputProcessor {
 	public static final String RightUpperArm = "RightUpperArm";
 	public static final String RightLowerArm = "RightLowerArm";
 	public static final String RightHand = "RightHand";
+	
+	public CameraHandler camHandler;
 
 	private ModelBatch modelBatch;
 	private AssetManager assets;
@@ -78,8 +80,7 @@ public class Cubebot implements InputProcessor {
 	private HashMap<String, BulletEntity> collisionBoxes;
 	private Environment environment;
 	private PerspectiveCamera cam;
-	private CameraHandler camHandler;
-	private CameraInputController camController;
+	//private CameraInputController camController;
 	private ModelInstance pedestal;
 	private ModelBatch shadowBatch;
 	private DirectionalShadowLight shadowLight;
@@ -128,10 +129,9 @@ public class Cubebot implements InputProcessor {
 		cam.update();
 		*/
 		
-		camHandler = new CameraHandler(cam, 0);
-		camHandler.setRotation(90);
+		camHandler = new CameraHandler(cam, 270);
 		
-		camController = new CameraInputController(cam);
+		//camController = new CameraInputController(cam);
 
 		// load in the file and store it in the asset manager
 		assets = new AssetManager();
@@ -454,7 +454,7 @@ public class Cubebot implements InputProcessor {
 	public void render() {
 		updateCollisionBoxes();
 		world.update();
-		camController.update();
+		//camController.update();
 		camHandler.update();
 		cam.update();
 				
@@ -559,9 +559,9 @@ public class Cubebot implements InputProcessor {
 		return null;
 	}
 
-	public CameraInputController getCamController() {
-		return camController;
-	}
+	//public CameraInputController getCamController() {
+	//	return camController;
+	//}
 
 	private class Tuple<X, Y> {
 		public final X x;
