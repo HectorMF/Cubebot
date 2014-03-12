@@ -11,7 +11,7 @@
 			"textures": [
 				{
 					"id": "Diffuse_jpg_015", 
-					"filename": "../Wood/Diffuse.jpg", 
+					"filename": "../Textures/Wood/Diffuse.jpg", 
 					"type": "DIFFUSE"
 				}
 			]

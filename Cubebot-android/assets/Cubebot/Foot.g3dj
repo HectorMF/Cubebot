@@ -173,7 +173,7 @@
 			"textures": [
 				{
 					"id": "Diffuse_jpg_001", 
-					"filename": "Diffuse.jpg", 
+					"filename": "../Textures/Wood/Diffuse.jpg", 
 					"type": "DIFFUSE"
 				}
 			]
@@ -187,7 +187,7 @@
 			"textures": [
 				{
 					"id": "Diffuse_jpg_002", 
-					"filename": "Diffuse.jpg", 
+					"filename": "../Textures/Wood/Diffuse.jpg", 
 					"type": "DIFFUSE"
 				}
 			]

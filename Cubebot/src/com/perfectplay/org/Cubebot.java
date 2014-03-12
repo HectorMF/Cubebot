@@ -154,10 +154,10 @@ public class Cubebot implements InputProcessor {
 		/*
 		 * Skybox
 		 */
-		String faces[] = { "Sky/skyX55+x.png",
-				"Sky/skyX55-x.png", "Sky/skyX55+y.png",
-				"Sky/skyX55-y.png", "Sky/skyX55+z.png",
-				"Sky/skyX55-z.png" };
+		String faces[] = { "Textures/Sky/skyX55+x.png",
+				"Textures/Sky/skyX55-x.png", "Textures/Sky/skyX55+y.png",
+				"Textures/Sky/skyX55-y.png", "Textures/Sky/skyX55+z.png",
+				"Textures/Sky/skyX55-z.png" };
 		
 		for (int i = 0; i < 6; i++) {
 			assets.load(faces[i], Pixmap.class);
