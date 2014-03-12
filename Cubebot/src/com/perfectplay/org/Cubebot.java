@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import aurelienribon.tweenengine.Tween;
-import bullet.BulletConstructor;
-import bullet.BulletEntity;
-import bullet.BulletWorld;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -47,6 +44,9 @@ import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSetting;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.perfectplay.org.bullet.BulletConstructor;
+import com.perfectplay.org.bullet.BulletEntity;
+import com.perfectplay.org.bullet.BulletWorld;
 
 public class Cubebot implements InputProcessor {
 
@@ -81,7 +81,7 @@ public class Cubebot implements InputProcessor {
 	private CameraInputController camController;
 	private ModelInstance pedestal;
 	private ModelBatch shadowBatch;
-	private DirectionalLight light;
+	private DirectionalShadowLight shadowLight;
 	private BulletWorld world;
 	private SkyBox skyBox;
 	ClosestRayResultCallback rayTestCB;
@@ -108,8 +108,10 @@ public class Cubebot implements InputProcessor {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f,
 				0.4f, 0.4f, .1f));
-		light = new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f);
-		environment.add(light);
+		
+		environment.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -1f, -.8f,
+				-.2f));
+			environment.shadowMap = shadowLight;
 		// environment.shadowMap = (DirectionalShadowLight)light;
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
@@ -463,11 +465,18 @@ public class Cubebot implements InputProcessor {
 		/*modelBatch.begin(cam);
 		world.render(modelBatch, environment);
 		modelBatch.end();*/
+		
+		shadowLight.begin(Vector3.Zero, cam.direction);
+		shadowBatch.begin(shadowLight.getCamera());
+		shadowBatch.render(instances.get("Chest"));
+		shadowBatch.end();
+		shadowLight.end();
+
 		/*
-		 * ((DirectionalShadowLight)light).begin(Vector3.Zero, cam.direction);
-		 * shadowBatch.begin(((DirectionalShadowLight)light).getCamera());
-		 * world.render(shadowBatch, null); shadowBatch.end();
-		 * ((DirectionalShadowLight)light).end();
+		  ((DirectionalShadowLight) light).begin(Vector3.Zero, cam.direction);
+		  shadowBatch.begin(((DirectionalShadowLight)light).getCamera());
+		  world.render(shadowBatch, null); shadowBatch.end();
+		  ((DirectionalShadowLight)light).end();
 		 */
 
 	}

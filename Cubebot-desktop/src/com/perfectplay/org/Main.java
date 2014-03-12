@@ -2,7 +2,6 @@ package com.perfectplay.org;
 
 import org.lwjgl.opengl.DisplayMode;
 
-import bullet.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;

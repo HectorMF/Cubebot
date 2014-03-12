@@ -27,6 +27,7 @@ public class GameScreen implements Screen {
 		resetButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.buttonPress.play();
+				game.getScreen().dispose();
 				game.setScreen(new GameScreen(game));
 			}
 		});
@@ -50,7 +51,7 @@ public class GameScreen implements Screen {
 		InputMultiplexer inputMux = new InputMultiplexer();
 		//inputMux.addProcessor(bot);
 		
-		//inputMux.addProcessor(bot.getCamController());
+		inputMux.addProcessor(bot.getCamController());
 		inputMux.addProcessor(stage);
 		Gdx.input.setInputProcessor(inputMux);
 		stage.addActor(table);
