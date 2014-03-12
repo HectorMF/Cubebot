@@ -41,6 +41,7 @@ public class GameScreen implements Screen {
 		menuButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.buttonPress.play();
+				game.getScreen().dispose();
 				game.setScreen(new MenuScreen(game));
 			}
 		});

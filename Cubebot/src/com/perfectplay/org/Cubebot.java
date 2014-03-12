@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -78,6 +79,8 @@ public class Cubebot implements InputProcessor {
 	private SkyBox skyBox;
 	private Environment environment;
 	private DirectionalShadowLight shadowLight;
+	private Attribute defaultMaterial;
+	private Attribute selectedMaterial;
 	
 	/*
 	 * Bullet Physics
@@ -131,7 +134,7 @@ public class Cubebot implements InputProcessor {
 		 * Legs
 		 */
 		assets.load("Cubebot/RightUpperLeg.g3dj", Model.class);
-		assets.load("Cubebot/LeftUpperLeg.obj", Model.class);
+		assets.load("Cubebot/LeftUpperLeg.g3dj", Model.class);
 		assets.load("Cubebot/LowerLeg.g3dj", Model.class);
 		assets.load("Cubebot/Foot.g3dj", Model.class);
 
@@ -147,7 +150,6 @@ public class Cubebot implements InputProcessor {
 		 * Environment
 		 */
 		assets.load("Cubebot/Cylinder.g3dj", Model.class);
-		assets.load("Cubebot/SpaceSphere.obj", Model.class);
 		
 		/*
 		 * Skybox
@@ -235,7 +237,7 @@ public class Cubebot implements InputProcessor {
 		/*
 		 * LEFT UPPER LEG
 		 */
-		instance = new ModelInstance(assets.get("Cubebot/LeftUpperLeg.obj",
+		instance = new ModelInstance(assets.get("Cubebot/LeftUpperLeg.g3dj",
 				Model.class));
 		node = instance.nodes.get(0);
 		node.translation.set(0, -1.5f, -3.2f);
@@ -411,6 +413,8 @@ public class Cubebot implements InputProcessor {
 		pedestal.transform.rotate(1, 0, 0, 90);
 		pedestal.transform.translate(0, 0, 15);
 		pedestal.transform.scale(2, 2, 1);
+		defaultMaterial = instances.get("Chest").materials.get(0).get(ColorAttribute.Diffuse).copy();
+		selectedMaterial = ColorAttribute.createDiffuse(Color.GREEN);
 		
 		/*
 		 * Physics world generation
@@ -525,11 +529,12 @@ public class Cubebot implements InputProcessor {
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		if (rayTestCB.hasHit()) {
 			if(instances.containsKey(selectedNode))
-				instances.get(selectedNode).materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE));
+				instances.get(selectedNode).materials.get(0).set(defaultMaterial);
 			final btCollisionObject obj = rayTestCB.getCollisionObject();
 			final btRigidBody body = (btRigidBody)(obj);
 			selectedNode = (String) body.userData;
-			instances.get(selectedNode).materials.get(0).set(ColorAttribute.createDiffuse(Color.GREEN));
+
+			instances.get(selectedNode).materials.get(0).set(selectedMaterial);
 		}
 		return true;
 	}
