@@ -5,6 +5,7 @@ import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -27,6 +28,7 @@ public class CubebotGame extends Game {
        
         this.setScreen(new MenuScreen(this));
         Tween.registerAccessor(Node.class, new NodeAccessor());
+        Tween.registerAccessor(PerspectiveCamera.class, new CameraAccessor());
         Tween.setCombinedAttributesLimit(4);
     }
 

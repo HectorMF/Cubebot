@@ -50,11 +50,11 @@ public class GameScreen implements Screen {
 		
 		table.row();
 		
-		TextButton zeroButton = new TextButton("View 0 Degrees", game.skin);
+		TextButton zeroButton = new TextButton("Front View", game.skin);
 		zeroButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.buttonPress.play();
-				bot.camHandler.setRotation(0);
+				bot.camHandler.setRotation(CameraHandler.FRONT);
 			}
 		});
 
@@ -63,11 +63,11 @@ public class GameScreen implements Screen {
 
 		table.row();
 		
-		TextButton ninetyButton = new TextButton("View 90 Degrees", game.skin);
+		TextButton ninetyButton = new TextButton("Left View", game.skin);
 		ninetyButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.buttonPress.play();
-				bot.camHandler.setRotation(90);
+				bot.camHandler.setRotation(CameraHandler.LEFT);
 			}
 		});
 
@@ -76,11 +76,11 @@ public class GameScreen implements Screen {
 
 		table.row();
 		
-		TextButton oneEightyButton = new TextButton("View 180 Degrees", game.skin);
+		TextButton oneEightyButton = new TextButton("Right View", game.skin);
 		oneEightyButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.buttonPress.play();
-				bot.camHandler.setRotation(180);
+				bot.camHandler.setRotation(CameraHandler.RIGHT);
 			}
 		});
 
@@ -89,24 +89,35 @@ public class GameScreen implements Screen {
 
 		table.row();
 		
-		TextButton twoSeventyButton = new TextButton("View 270 Degrees", game.skin);
+		TextButton twoSeventyButton = new TextButton("Back View", game.skin);
 		twoSeventyButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.buttonPress.play();
-				bot.camHandler.setRotation(270);
+				bot.camHandler.setRotation(CameraHandler.BACK);
 			}
 		});
 
 		table.add(twoSeventyButton).width(200).height(50).bottom().right()
 				.padRight(50).padBottom(50);
-
+		
+		TextButton topButton = new TextButton("Top View", game.skin);
+		topButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.buttonPress.play();
+				bot.camHandler.setRotation(CameraHandler.TOP);
+			}
+		});
 		table.row();
+		table.add(topButton).width(200).height(50).bottom().right()
+				.padRight(50).padBottom(50);
+
+		
 
 		InputMultiplexer inputMux = new InputMultiplexer();
 		inputMux.addProcessor(bot);
-		
+		inputMux.addProcessor(0, stage);
 		//inputMux.addProcessor(bot.getCamController());
-		inputMux.addProcessor(stage);
+		//inputMux.addProcessor(stage);
 		Gdx.input.setInputProcessor(inputMux);
 		stage.addActor(table);
 
@@ -116,7 +127,7 @@ public class GameScreen implements Screen {
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
 		fold.push(new Animation(bot.getNode(Cubebot.Head), "Animations/HeadGoToCube.txt"))
-		.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/CubebotTest.txt"))
+		.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/CubebotTest.txt"))
 			.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmGoToCube.txt"))
 			.delay(2.5f)
 			.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftInnerArmGoToCube.txt"))
@@ -124,6 +135,8 @@ public class GameScreen implements Screen {
 			.delay(1.5f)
 			.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftOuterArmGoToCube.txt"))
 			.delay(1.2f)
+					.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/RightHandToCube.txt"))
+
 			.push(new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHandToCube.txt"))
 			.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHandToCube.txt"));
 		

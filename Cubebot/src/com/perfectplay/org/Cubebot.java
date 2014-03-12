@@ -50,8 +50,6 @@ import com.perfectplay.org.bullet.BulletWorld;
 
 public class Cubebot implements InputProcessor {
 
-	ShapeRenderer renderer = new ShapeRenderer();
-
 	public static final String Chest = "Chest";
 	public static final String Pelvis = "Pelvis";
 	public static final String Head = "Head";
@@ -72,68 +70,73 @@ public class Cubebot implements InputProcessor {
 	public static final String RightLowerArm = "RightLowerArm";
 	public static final String RightHand = "RightHand";
 	
+	/*
+	 * Camera
+	 */
 	public CameraHandler camHandler;
-
+	private PerspectiveCamera cam;
+	
+	/*
+	 * Rendering
+	 */
 	private ModelBatch modelBatch;
 	private AssetManager assets;
-	private HashMap<String, ModelInstance> instances;
-	private HashMap<String, BulletEntity> collisionBoxes;
-	private Environment environment;
-	private PerspectiveCamera cam;
-	//private CameraInputController camController;
-	private ModelInstance pedestal;
 	private ModelBatch shadowBatch;
-	private DirectionalShadowLight shadowLight;
-	private BulletWorld world;
-	private SkyBox skyBox;
-	ClosestRayResultCallback rayTestCB;
-	Vector3 rayFrom = new Vector3();
-	Vector3 rayTo = new Vector3();
-	String selectedNode;
-	Vector3 position;
 	
-	btPoint2PointConstraint pickConstraint = null;
-	btRigidBody pickedBody = null;
-	float pickDistance;
-	Vector3 tmpV = new Vector3();
+	/*
+	 * Environment
+	 */
+	private HashMap<String, ModelInstance> instances;
+	private ModelInstance pedestal;
+	private SkyBox skyBox;
+	private Environment environment;
+	private DirectionalShadowLight shadowLight;
+	
+	/*
+	 * Bullet Physics
+	 */
+	private BulletWorld world;
+	private HashMap<String, BulletEntity> collisionBoxes;
+	private ClosestRayResultCallback rayTestCB;
+	private Vector3 rayFrom = new Vector3();
+	private Vector3 rayTo = new Vector3();
+	private String selectedNode;
+	private Vector3 position;
+	
+	private btPoint2PointConstraint pickConstraint = null;
+	private btRigidBody pickedBody = null;
+	private float pickDistance;
+	private Vector3 tmpV = new Vector3();
 	
 	public Cubebot() {
-		Bullet.init();
-		btCollisionObject body;
-		rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
-		world = new BulletWorld();
-
 		instances = new HashMap<String, ModelInstance>();
-		collisionBoxes = new HashMap<String, BulletEntity>();
+
 		// set up camera, environment, and input
 		modelBatch = new ModelBatch();
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f,
 				0.4f, 0.4f, .1f));
-		
 		environment.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, .4f, -.8f, 2f));
 			environment.shadowMap = shadowLight;
-		// environment.shadowMap = (DirectionalShadowLight)light;
-		shadowBatch = new ModelBatch(new DepthShaderProvider());
+
+		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
+
+		camHandler = new CameraHandler(cam);
 		
 		/*
-		cam.position.set(21f, 7.5f, 0f);
-		cam.position.set(0f, 7.5f, 21f);
-		cam.position.set(-21f, 7.5f, 0f);
-		cam.position.set(0f, 7.5f, -21f);
-		cam.lookAt(0, 0, 0);
-		cam.near = 0.1f;
-		cam.far = 300f;
-		cam.update();
-		*/
-		
-		camHandler = new CameraHandler(cam, 270);
-		
-		//camController = new CameraInputController(cam);
+		 * Physics simulation stuff
+		 */
 
-		// load in the file and store it in the asset manager
+		Bullet.init();		
+		world = new BulletWorld();
+		collisionBoxes = new HashMap<String, BulletEntity>();
+		btCollisionObject body;
+		rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
+		
+		// load in the files and store it in the asset manager
 		assets = new AssetManager();
 
 		// load in the cubebot pieces
@@ -164,9 +167,26 @@ public class Cubebot implements InputProcessor {
 		 */
 		assets.load("Cubebot/Cylinder.g3dj", Model.class);
 		assets.load("Cubebot/SpaceSphere.obj", Model.class);
+		
+		/*
+		 * Skybox
+		 */
+		String faces[] = { "Sky/skyX55+x.png",
+				"Sky/skyX55-x.png", "Sky/skyX55+y.png",
+				"Sky/skyX55-y.png", "Sky/skyX55+z.png",
+				"Sky/skyX55-z.png" };
+		
+		for (int i = 0; i < 6; i++) {
+			assets.load(faces[i], Pixmap.class);
+		}
+		
 
-		while (!assets.update())
-			;
+		while (!assets.update());
+		skyBox = new SkyBox(assets,faces);
+		
+		/*
+		 * Build the cubebot
+		 */
 		createBot();
 	}
 
@@ -376,6 +396,9 @@ public class Cubebot implements InputProcessor {
 		boundingBoxes.put("RightHand",
 				node.calculateBoundingBox(new BoundingBox()));
 
+		/*
+		 * Add children to each parent
+		 */
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.Head));
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.Pelvis));
 
@@ -407,28 +430,10 @@ public class Cubebot implements InputProcessor {
 		pedestal.transform.rotate(1, 0, 0, 90);
 		pedestal.transform.translate(0, 0, 15);
 		pedestal.transform.scale(2, 2, 1);
+		
 		/*
-		String faces[] = { "Sky/skyX51+x.png",
-				"Sky/skyX51-x.png", "Sky/skyX51+y.png",
-				"Sky/skyX51-y.png", "Sky/skyX51+z.png",
-				"Sky/skyX51-z.png" };
-		
-		String faces[] = { "Sky/ColdSpringDaySkybox_left.tga",
-				"Sky/ColdSpringDaySkybox_right.tga", "Sky/ColdSpringDaySkybox_up.tga",
-				"Sky/ColdSpringDaySkybox_down.tga", "Sky/ColdSpringDaySkybox_front.tga",
-				"Sky/ColdSpringDaySkybox_back.tga" };*/
-		
-		String faces[] = { "Sky/skyX55+x.png",
-				"Sky/skyX55-x.png", "Sky/skyX55+y.png",
-				"Sky/skyX55-y.png", "Sky/skyX55+z.png",
-				"Sky/skyX55-z.png" };
-		for (int i = 0; i < 6; i++) {
-			assets.load(faces[i], Pixmap.class);
-		}
-		
-		while(!assets.update());
-		skyBox = new SkyBox(assets,faces);
-		
+		 * Physics world generation
+		 */
 		BulletEntity e;
 		for (String name : boundingBoxes.keySet()) {
 			BoundingBox bb = boundingBoxes.get(name);
@@ -444,49 +449,40 @@ public class Cubebot implements InputProcessor {
 			e.body.setCollisionFlags(e.body.getCollisionFlags()
 					| btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
 			e.body.userData = name;
-			e.transform.set(
-					instances.get(name).nodes.get(0).calculateWorldTransform())
-					.rotate(1, 0, 0, 90);
 			collisionBoxes.put(name, e);
 		}
 	}
 
 	public void render() {
-		updateCollisionBoxes();
-		world.update();
-		//camController.update();
-		camHandler.update();
-		cam.update();
-				
-		pickNode(Gdx.input.getX(), Gdx.input.getY());
+		//clear screen
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(.5f, .8f, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
+		updateCollisionBoxes();
+		world.update();
+		camHandler.update();
+		
+		//render the world
 		skyBox.render(cam);
 		modelBatch.begin(cam);
 		modelBatch.render(pedestal, environment);
 		modelBatch.render(instances.get("Chest"), environment);
 		modelBatch.end();
-
-		/*modelBatch.begin(cam);
-		world.render(modelBatch, environment);
-		modelBatch.end();*/
 		
+		//render shadows
 		shadowLight.begin(Vector3.Zero, cam.direction);
 		shadowBatch.begin(shadowLight.getCamera());
 		shadowBatch.render(instances.get("Chest"));
 		shadowBatch.end();
 		shadowLight.end();
-
-		/*
-		  ((DirectionalShadowLight) light).begin(Vector3.Zero, cam.direction);
-		  shadowBatch.begin(((DirectionalShadowLight)light).getCamera());
-		  world.render(shadowBatch, null); shadowBatch.end();
-		  ((DirectionalShadowLight)light).end();
-		 */
-
+		
+		//bullet debug mode
+		/*modelBatch.begin(cam);
+		for(BulletEntity e : collisionBoxes.values())
+		modelBatch.render(e.modelInstance);
+		modelBatch.end();*/
 	}
 
 	public Node getNode(String id) {
@@ -499,11 +495,12 @@ public class Cubebot implements InputProcessor {
 		BulletEntity e;
 		for (String name : collisionBoxes.keySet()) {
 			e = collisionBoxes.get(name);
-			e.body.setWorldTransform(instances.get(name).nodes.get(0).calculateWorldTransform());
-			
-			/*e.transform.set(
-					instances.get(name).nodes.get(0).calculateWorldTransform())
-					.rotate(1, 0, 0, 90);*/
+			Matrix4 transform = instances.get(name).nodes.get(0).calculateWorldTransform().cpy().rotate(new Vector3(0,1,0),90).rotate(new Vector3(0,0,1),90);
+			//Unknown problem with left and right foot translations
+			if(name == "RightFoot" || name == "LeftFoot")
+				transform.translate(new Vector3(0,-.4f,-.75f));
+			e.body.setWorldTransform(transform);
+			e.modelInstance.transform.set(transform);
 		}
 	}
 
@@ -517,82 +514,24 @@ public class Cubebot implements InputProcessor {
 		world.dispose();
 	}
 
-	public String pickNode(int x, int y) {
-
-		cam.update();
-		Ray ray = cam.getPickRay(x, y);
-		BoundingBox boundingBox = new BoundingBox();
-		Vector3 intersect = new Vector3();
-		ArrayList<Tuple<String, Vector3>> intersections = new ArrayList<Tuple<String, Vector3>>();
-		for (String name : instances.keySet()) {
-			ModelInstance node = instances.get(name);
-			Node node2 = instances.get(name).nodes.get(0);
-
-			Vector3 pos = new Vector3();
-
-			node2.calculateWorldTransform().getTranslation(pos);
-			Matrix4 mat = new Matrix4();
-			mat.scale(1, 1, 1);
-			mat.rotate(node2.calculateLocalTransform().getRotation(
-					new Quaternion()));
-			mat.translate(new Vector3(pos.x, pos.y, pos.z));
-
-			if (Intersector.intersectRayBounds(ray, boundingBox, intersect)) {
-				intersections.add(new Tuple<String, Vector3>(name, intersect
-						.cpy()));
-			}
-		}
-
-		if (intersections.size() > 0) {
-			Tuple<String, Vector3> min = intersections.remove(0);
-			for (int i = 0; i < intersections.size(); i++) {
-				// System.out.println(intersections.get(i).x);
-				if (intersections.get(i).y.len2() < min.y.len2())
-					min = intersections.get(i);
-			}
-			// if (min.x == "LeftHand")
-			// System.out.println(min.x);
-
-			return min.x;
-		}
-
-		return null;
-	}
-
-	//public CameraInputController getCamController() {
-	//	return camController;
-	//}
-
-	private class Tuple<X, Y> {
-		public final X x;
-		public final Y y;
-
-		public Tuple(X x, Y y) {
-			this.x = x;
-			this.y = y;
-		}
-	}
-
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
+		camHandler.touchDown(x, y, pointer, button);
 		Ray ray = cam.getPickRay(x, y);
 		rayFrom.set(ray.origin);
 		rayTo.set(ray.direction).scl(100f).add(rayFrom); // 50 meters max from the origin
@@ -630,12 +569,14 @@ public class Cubebot implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		camHandler.touchUp(screenX,screenY,pointer,button);
 		selectedNode = "";
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
+		camHandler.touchDragged(x, y, pointer);
 		if (pickConstraint != null && instances.containsKey(selectedNode)) {
 			System.out.println("TEST");
 			Ray ray = cam.getPickRay(x, y);
@@ -668,13 +609,11 @@ public class Cubebot implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }
