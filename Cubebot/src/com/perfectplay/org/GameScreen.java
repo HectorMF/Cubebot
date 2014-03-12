@@ -103,7 +103,7 @@ public class GameScreen implements Screen {
 		table.row();
 
 		InputMultiplexer inputMux = new InputMultiplexer();
-		//inputMux.addProcessor(bot);
+		inputMux.addProcessor(bot);
 		
 		//inputMux.addProcessor(bot.getCamController());
 		inputMux.addProcessor(stage);
