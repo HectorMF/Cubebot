@@ -48,7 +48,9 @@ public class GameScreen implements Screen {
 				.padRight(50).padBottom(50);
 
 		InputMultiplexer inputMux = new InputMultiplexer();
-		inputMux.addProcessor(bot.getCamController());
+		//inputMux.addProcessor(bot);
+		
+		//inputMux.addProcessor(bot.getCamController());
 		inputMux.addProcessor(stage);
 		Gdx.input.setInputProcessor(inputMux);
 		stage.addActor(table);
@@ -59,6 +61,7 @@ public class GameScreen implements Screen {
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
 		fold.push(new Animation(bot.getNode(Cubebot.Head), "Animations/HeadGoToCube.txt"))
+		.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/CubebotTest.txt"))
 			.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmGoToCube.txt"))
 			.delay(2.5f)
 			.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftInnerArmGoToCube.txt"))

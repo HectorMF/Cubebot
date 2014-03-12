@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import aurelienribon.tweenengine.Tween;
 import bullet.BulletConstructor;
+import bullet.BulletEntity;
 import bullet.BulletWorld;
 
 import com.badlogic.gdx.Gdx;
@@ -14,7 +16,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -37,10 +41,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSetting;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
-public class Cubebot implements InputProcessor{
-	ArrayList<BoundingBox> position = new ArrayList<BoundingBox>();
+public class Cubebot implements InputProcessor {
 
 	ShapeRenderer renderer = new ShapeRenderer();
 
@@ -67,43 +75,55 @@ public class Cubebot implements InputProcessor{
 	private ModelBatch modelBatch;
 	private AssetManager assets;
 	private HashMap<String, ModelInstance> instances;
-	private HashMap<String, BoundingBox> boundingBoxes;
+	private HashMap<String, BulletEntity> collisionBoxes;
 	private Environment environment;
 	private PerspectiveCamera cam;
 	private CameraInputController camController;
 	private ModelInstance pedestal;
-	private ModelInstance skyBox;
 	private ModelBatch shadowBatch;
 	private DirectionalLight light;
 	private BulletWorld world;
+	private SkyBox skyBox;
+	ClosestRayResultCallback rayTestCB;
+	Vector3 rayFrom = new Vector3();
+	Vector3 rayTo = new Vector3();
+	String selectedNode;
+	Vector3 position;
+	
+	btPoint2PointConstraint pickConstraint = null;
+	btRigidBody pickedBody = null;
+	float pickDistance;
+	Vector3 tmpV = new Vector3();
 	
 	public Cubebot() {
 		Bullet.init();
 		btCollisionObject body;
+		rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
 		world = new BulletWorld();
-		
+
 		instances = new HashMap<String, ModelInstance>();
-		boundingBoxes = new HashMap<String, BoundingBox>();
+		collisionBoxes = new HashMap<String, BulletEntity>();
 		// set up camera, environment, and input
 		modelBatch = new ModelBatch();
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f,
 				0.4f, 0.4f, .1f));
-		light = new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f,
-				-0.8f, -0.2f);
+		light = new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f);
 		environment.add(light);
-		//environment.shadowMap = (DirectionalShadowLight)light;
+		// environment.shadowMap = (DirectionalShadowLight)light;
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
-		cam.position.set(21f, 7.5f, 0f);
+		//cam.position.set(21f, 7.5f, 0f);
+		cam.position.set(0f, 7.5f, 21f);
+		cam.position.set(-21f, 7.5f, 21f);
+		cam.position.set(0f, 7.5f, -21f);
 		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
 		cam.far = 300f;
 		cam.update();
 
 		camController = new CameraInputController(cam);
-		Gdx.input.setInputProcessor(camController);
 
 		// load in the file and store it in the asset manager
 		assets = new AssetManager();
@@ -131,22 +151,21 @@ public class Cubebot implements InputProcessor{
 		assets.load("Cubebot/LeftHand.g3dj", Model.class);
 		assets.load("Cubebot/RightHand.g3dj", Model.class);
 
-		
 		/*
 		 * Environment
 		 */
 		assets.load("Cubebot/Cylinder.g3dj", Model.class);
 		assets.load("Cubebot/SpaceSphere.obj", Model.class);
-		final Model boxModel = new ModelBuilder().createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
-				ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), Usage.Position | Usage.Normal);
-		world.addConstructor("staticbox", new BulletConstructor(boxModel, 0f)); // mass = 0: static body
-		while (!assets.update());
+
+		while (!assets.update())
+			;
 		createBot();
 	}
 
 	private void createBot() {
 		ModelInstance instance;
 		Node node;
+		HashMap<String, BoundingBox> boundingBoxes = new HashMap<String, BoundingBox>();
 
 		/*
 		 * CHEST PIECE
@@ -161,8 +180,9 @@ public class Cubebot implements InputProcessor{
 		instances.put("Chest", instance);
 		instance = new ModelInstance(assets.get("Cubebot/Chest.g3dj",
 				Model.class));
-		
-		boundingBoxes.put("Chest", node.calculateBoundingBox(new BoundingBox()));
+
+		boundingBoxes
+				.put("Chest", node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * HEAD PIECE
 		 */
@@ -187,7 +207,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("Chest").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("Pelvis", instance);
-		boundingBoxes.put("Pelvis", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("Pelvis",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT UPPER LEG
 		 */
@@ -199,7 +220,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("Pelvis").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightUpperLeg", instance);
-		boundingBoxes.put("RightUpperLeg", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("RightUpperLeg",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT UPPER LEG
 		 */
@@ -211,7 +233,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("Pelvis").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftUpperLeg", instance);
-		boundingBoxes.put("LeftUpperLeg", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("LeftUpperLeg",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT LOWER LEG
 		 */
@@ -223,7 +246,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("LeftUpperLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftLowerLeg", instance);
-		boundingBoxes.put("LeftLowerLeg", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("LeftLowerLeg",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * Right LOWER LEG
 		 */
@@ -235,7 +259,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("RightUpperLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightLowerLeg", instance);
-		boundingBoxes.put("RightLowerLeg", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("RightLowerLeg",
+				node.calculateBoundingBox(new BoundingBox()));
 
 		/*
 		 * RIGHT FOOT
@@ -248,7 +273,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("RightLowerLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightFoot", instance);
-		boundingBoxes.put("RightFoot", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("RightFoot",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT FOOT
 		 */
@@ -260,7 +286,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("LeftLowerLeg").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftFoot", instance);
-		boundingBoxes.put("LeftFoot", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("LeftFoot",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT UPPER ARM
 		 */
@@ -272,7 +299,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("Chest").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftUpperArm", instance);
-		boundingBoxes.put("LeftUpperArm", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("LeftUpperArm",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT LOWER ARM
 		 */
@@ -284,7 +312,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("LeftUpperArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftLowerArm", instance);
-		boundingBoxes.put("LeftLowerArm", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("LeftLowerArm",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * LEFT Hand
 		 */
@@ -296,7 +325,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("LeftLowerArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("LeftHand", instance);
-		boundingBoxes.put("LeftHand", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("LeftHand",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT UPPER ARM
 		 */
@@ -308,7 +338,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("Chest").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightUpperArm", instance);
-		boundingBoxes.put("RightUpperArm", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("RightUpperArm",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT LOWER ARM
 		 */
@@ -320,7 +351,8 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("RightUpperArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightLowerArm", instance);
-		boundingBoxes.put("RightLowerArm", node.calculateBoundingBox(new BoundingBox()));
+		boundingBoxes.put("RightLowerArm",
+				node.calculateBoundingBox(new BoundingBox()));
 		/*
 		 * RIGHT HAND
 		 */
@@ -332,8 +364,9 @@ public class Cubebot implements InputProcessor{
 		node.parent = instances.get("RightLowerArm").nodes.get(0);
 		instance.calculateTransforms();
 		instances.put("RightHand", instance);
-		boundingBoxes.put("RightHand", node.calculateBoundingBox(new BoundingBox()));
-		
+		boundingBoxes.put("RightHand",
+				node.calculateBoundingBox(new BoundingBox()));
+
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.Head));
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.Pelvis));
 
@@ -356,71 +389,87 @@ public class Cubebot implements InputProcessor{
 		getNode(Cubebot.RightUpperArm).children
 				.add(getNode(Cubebot.RightLowerArm));
 		getNode(Cubebot.Chest).children.add(getNode(Cubebot.RightUpperArm));
-		
+
 		/*
 		 * Environment
 		 */
 		pedestal = new ModelInstance(assets.get("Cubebot/Cylinder.g3dj",
 				Model.class));
 		pedestal.transform.rotate(1, 0, 0, 90);
-		pedestal.transform.translate(0,0,15);
-		pedestal.transform.scale(2, 2,1);
+		pedestal.transform.translate(0, 0, 15);
+		pedestal.transform.scale(2, 2, 1);
+		/*
+		String faces[] = { "Sky/skyX51+x.png",
+				"Sky/skyX51-x.png", "Sky/skyX51+y.png",
+				"Sky/skyX51-y.png", "Sky/skyX51+z.png",
+				"Sky/skyX51-z.png" };
 		
-		skyBox =  new ModelInstance(assets.get("Cubebot/SpaceSphere.obj",
-				Model.class));
-		//skyBox.transform.scale(2,10,10);
-		skyBox.transform.translate(0,0,0);
-		skyBox.calculateTransforms();
+		String faces[] = { "Sky/ColdSpringDaySkybox_left.tga",
+				"Sky/ColdSpringDaySkybox_right.tga", "Sky/ColdSpringDaySkybox_up.tga",
+				"Sky/ColdSpringDaySkybox_down.tga", "Sky/ColdSpringDaySkybox_front.tga",
+				"Sky/ColdSpringDaySkybox_back.tga" };*/
+		
+		String faces[] = { "Sky/skyX55+x.png",
+				"Sky/skyX55-x.png", "Sky/skyX55+y.png",
+				"Sky/skyX55-y.png", "Sky/skyX55+z.png",
+				"Sky/skyX55-z.png" };
+		for (int i = 0; i < 6; i++) {
+			assets.load(faces[i], Pixmap.class);
+		}
+		
+		while(!assets.update());
+		skyBox = new SkyBox(assets,faces);
+		
+		BulletEntity e;
+		for (String name : boundingBoxes.keySet()) {
+			BoundingBox bb = boundingBoxes.get(name);
+			Vector3 dim = bb.getDimensions();
+
+			Model boxModel = new ModelBuilder().createBox(dim.x, dim.y, dim.z,
+					new Material(ColorAttribute.createDiffuse(Color.WHITE),
+							ColorAttribute.createSpecular(Color.WHITE),
+							FloatAttribute.createShininess(64f)),
+					Usage.Position | Usage.Normal);
+			world.addConstructor(name, new BulletConstructor(boxModel, 0));
+			e = world.add(name, 0, 0, 0);
+			e.body.setCollisionFlags(e.body.getCollisionFlags()
+					| btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
+			e.body.userData = name;
+			e.transform.set(
+					instances.get(name).nodes.get(0).calculateWorldTransform())
+					.rotate(1, 0, 0, 90);
+			collisionBoxes.put(name, e);
+		}
 	}
 
 	public void render() {
+		updateCollisionBoxes();
 		world.update();
 		camController.update();
 		cam.update();
+		
 		pickNode(Gdx.input.getX(), Gdx.input.getY());
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(.5f, .8f, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		// System.out.println("working");
-
-		renderer.setProjectionMatrix(cam.combined);
-		renderer.begin(ShapeType.Filled);
-
 		
-		
-		for(BoundingBox box : position){
-			renderer.setColor(new Random().nextFloat(), new Random().nextFloat(), 0,new Random().nextFloat());
-			renderer.box(box.getCenter().x, box.getCenter().y,
-					box.getCenter().z, box.getDimensions().x, box.getDimensions().y,
-					box.getDimensions().z);
-		}
-		/*
-		for (int i = 0; i < position.size(); i++){
-			renderer.setColor(new Random().nextFloat(), new Random().nextFloat(), 0,new Random().nextFloat());
-			renderer.box(position.get(i).x, position.get(i).y,
-					position.get(i).z, dimension.get(i).x, dimension.get(i).y,
-					dimension.get(i).z);
-		}*/
-		renderer.end();
-
+		skyBox.render(cam);
 		modelBatch.begin(cam);
-		modelBatch.render(skyBox, environment);
 		modelBatch.render(pedestal, environment);
 		modelBatch.render(instances.get("Chest"), environment);
 		modelBatch.end();
-		
-		modelBatch.begin(cam);
+
+		/*modelBatch.begin(cam);
 		world.render(modelBatch, environment);
-		modelBatch.end();
+		modelBatch.end();*/
 		/*
-		((DirectionalShadowLight)light).begin(Vector3.Zero, cam.direction);
-		shadowBatch.begin(((DirectionalShadowLight)light).getCamera());
-		world.render(shadowBatch, null);
-		shadowBatch.end();
-		((DirectionalShadowLight)light).end();
-		*/
-		position.clear();
+		 * ((DirectionalShadowLight)light).begin(Vector3.Zero, cam.direction);
+		 * shadowBatch.begin(((DirectionalShadowLight)light).getCamera());
+		 * world.render(shadowBatch, null); shadowBatch.end();
+		 * ((DirectionalShadowLight)light).end();
+		 */
+
 	}
 
 	public Node getNode(String id) {
@@ -429,14 +478,30 @@ public class Cubebot implements InputProcessor{
 		return null;
 	}
 
+	public void updateCollisionBoxes() {
+		BulletEntity e;
+		for (String name : collisionBoxes.keySet()) {
+			e = collisionBoxes.get(name);
+			e.body.setWorldTransform(instances.get(name).nodes.get(0).calculateWorldTransform());
+			
+			/*e.transform.set(
+					instances.get(name).nodes.get(0).calculateWorldTransform())
+					.rotate(1, 0, 0, 90);*/
+		}
+	}
+
 	public void dispose() {
 		modelBatch.dispose();
 		instances.clear();
 		assets.dispose();
+		for (String name : collisionBoxes.keySet()) {
+			collisionBoxes.get(name).dispose();
+		}
+		world.dispose();
 	}
 
 	public String pickNode(int x, int y) {
-		
+
 		cam.update();
 		Ray ray = cam.getPickRay(x, y);
 		BoundingBox boundingBox = new BoundingBox();
@@ -445,21 +510,16 @@ public class Cubebot implements InputProcessor{
 		for (String name : instances.keySet()) {
 			ModelInstance node = instances.get(name);
 			Node node2 = instances.get(name).nodes.get(0);
-			
+
 			Vector3 pos = new Vector3();
-		
+
 			node2.calculateWorldTransform().getTranslation(pos);
 			Matrix4 mat = new Matrix4();
 			mat.scale(1, 1, 1);
-			mat.rotate(node2.calculateLocalTransform().getRotation(new Quaternion()));
-			mat.translate(new Vector3(pos.x,pos.y,pos.z));
-			
-			///boundingBox
-			boundingBox = new BoundingBox(boundingBoxes.get(name)).mul(mat);
-			position.add(boundingBox);
-			
-				// /System.out.println(test2);
-			
+			mat.rotate(node2.calculateLocalTransform().getRotation(
+					new Quaternion()));
+			mat.translate(new Vector3(pos.x, pos.y, pos.z));
+
 			if (Intersector.intersectRayBounds(ray, boundingBox, intersect)) {
 				intersections.add(new Tuple<String, Vector3>(name, intersect
 						.cpy()));
@@ -473,8 +533,8 @@ public class Cubebot implements InputProcessor{
 				if (intersections.get(i).y.len2() < min.y.len2())
 					min = intersections.get(i);
 			}
-			//if (min.x == "LeftHand")
-			//	System.out.println(min.x);
+			// if (min.x == "LeftHand")
+			// System.out.println(min.x);
 
 			return min.x;
 		}
@@ -515,20 +575,77 @@ public class Cubebot implements InputProcessor{
 	}
 
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean touchDown(int x, int y, int pointer, int button) {
+		Ray ray = cam.getPickRay(x, y);
+		rayFrom.set(ray.origin);
+		rayTo.set(ray.direction).scl(100f).add(rayFrom); // 50 meters max from the origin
+		// Because we reuse the ClosestRayResultCallback, we need reset it's values
+		rayTestCB.setCollisionObject(null);
+		rayTestCB.setClosestHitFraction(1f);
+		rayTestCB.getRayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
+		rayTestCB.getRayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
+
+		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
+		if (rayTestCB.hasHit()) {
+			final btCollisionObject obj = rayTestCB.getCollisionObject();
+			final btRigidBody body = (btRigidBody)(obj);
+			tmpV.set(rayTestCB.getHitPointWorld().getFloats());
+			tmpV.mul(body.getCenterOfMassTransform().inv());
+			System.out.println(body.userData);
+			
+			pickConstraint = new btPoint2PointConstraint(body, tmpV);
+			btConstraintSetting setting = pickConstraint.getSetting();
+			setting.setImpulseClamp(30f);
+			setting.setTau(0.001f);
+			pickConstraint.setSetting(setting);
+			pickedBody = body;
+			((btDynamicsWorld)world.collisionWorld).addConstraint(pickConstraint);
+
+			pickDistance = Vector3.tmp.sub(cam.position).len();
+			selectedNode = (String) body.userData;
+			instances.get(selectedNode).materials.get(0).set(ColorAttribute.createDiffuse(Color.GREEN));
+			for(Attribute a : instances.get(selectedNode).materials.get(0)){
+				System.out.println(a.toString());
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
+		selectedNode = "";
 		return false;
 	}
 
 	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
+	public boolean touchDragged(int x, int y, int pointer) {
+		if (pickConstraint != null && instances.containsKey(selectedNode)) {
+			System.out.println("TEST");
+			Ray ray = cam.getPickRay(x, y);
+			Vector3.tmp.set(ray.direction).scl(pickDistance).add(cam.position);
+			pickConstraint.setPivotB(Vector3.tmp);
+			world.update();
+			Vector3 pos = new Vector3();
+			System.out.println(selectedNode);
+			//collisionBoxes.get(selectedNode).body.getWorldTransform().getTranslation(pos);
+			//Tween move = Tween.set(instances.get(selectedNode).nodes.get(0), NodeAccessor.POSITION).target(pos.x,pos.y,pos.z).start();
+			//move.update(10);
+			
+			
+		}
+		/*
+		if(instances.containsKey(selectedNode)){
+			System.out.println(x + " : " + y);
+			Tween move = Tween.set(instances.get(selectedNode).nodes.get(0), NodeAccessor.POSITION).target(x,y,0).start();
+			move.update(10);
+			
+			
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(true);
+			//instances.get(selectedNode).nodes.get(0).globalTransform.rotate(new Vector3(1,0,0),12);
+			//instances.get(selectedNode).nodes.get(0).calculateTransforms(true);
+			System.out.println("AFTER" + instances.get(selectedNode).nodes.get(0).globalTransform);
+			//updateCollisionBoxes();
+		}*/
 		return false;
 	}
 

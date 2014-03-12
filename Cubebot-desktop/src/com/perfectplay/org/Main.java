@@ -34,7 +34,7 @@ public class Main {
 		//cfg.resizable = false;
 		cfg.width = 1080;
 		cfg.height = 760;
-	//	new LwjglApplication(new RayCastTest(), cfg);
+	//	new LwjglApplication(new RayPickRagdollTest(), cfg);
 		new LwjglApplication(new CubebotGame(), cfg);
 	}
 }
