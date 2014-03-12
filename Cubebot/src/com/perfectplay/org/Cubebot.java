@@ -78,6 +78,7 @@ public class Cubebot implements InputProcessor {
 	private HashMap<String, BulletEntity> collisionBoxes;
 	private Environment environment;
 	private PerspectiveCamera cam;
+	private CameraHandler camHandler;
 	private CameraInputController camController;
 	private ModelInstance pedestal;
 	private ModelBatch shadowBatch;
@@ -115,15 +116,21 @@ public class Cubebot implements InputProcessor {
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
-		//cam.position.set(21f, 7.5f, 0f);
+		
+		/*
+		cam.position.set(21f, 7.5f, 0f);
 		cam.position.set(0f, 7.5f, 21f);
-		cam.position.set(-21f, 7.5f, 21f);
+		cam.position.set(-21f, 7.5f, 0f);
 		cam.position.set(0f, 7.5f, -21f);
 		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
 		cam.far = 300f;
 		cam.update();
-
+		*/
+		
+		camHandler = new CameraHandler(cam, 0);
+		camHandler.setRotation(90);
+		
 		camController = new CameraInputController(cam);
 
 		// load in the file and store it in the asset manager
@@ -448,8 +455,9 @@ public class Cubebot implements InputProcessor {
 		updateCollisionBoxes();
 		world.update();
 		camController.update();
+		camHandler.update();
 		cam.update();
-		
+				
 		pickNode(Gdx.input.getX(), Gdx.input.getY());
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
