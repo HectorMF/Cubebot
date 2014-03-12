@@ -109,8 +109,7 @@ public class Cubebot implements InputProcessor {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f,
 				0.4f, 0.4f, .1f));
 		
-		environment.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -1f, -.8f,
-				-.2f));
+		environment.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, .4f, -.8f, 2f));
 			environment.shadowMap = shadowLight;
 		// environment.shadowMap = (DirectionalShadowLight)light;
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
