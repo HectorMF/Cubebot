@@ -175,7 +175,8 @@ public class Cubebot implements InputProcessor {
 				Model.class));
 		node = instance.nodes.get(0);
 		node.rotation.set(new Vector3(1, 0, 0), -90);
-		node.translation.set(0, 0, 0);
+		node.rotation.mul(new Quaternion(new Vector3(0,0,1), 90));
+		node.translation.set(0, -.2f, 0);
 		node.scale.set(1, 1, 1);
 		instance.calculateTransforms();
 		instances.put("Chest", instance);
