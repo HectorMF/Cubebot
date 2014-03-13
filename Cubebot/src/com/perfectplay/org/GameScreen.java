@@ -153,8 +153,9 @@ public class GameScreen implements Screen {
 
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
-		fold.push(new Animation(bot.getNode(Cubebot.Head), "Animations/HeadGoToCube.txt"))
-		.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/CubebotTest.txt"))
+		fold.push(new Animation(bot.getNode(Cubebot.Head), "Animations/HeadTest.txt")).start();
+		/*
+		 * .push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/CubebotTest.txt"))
 			.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmGoToCube.txt"))
 			.delay(2.5f)
 			.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftInnerArmGoToCube.txt"))
@@ -166,6 +167,7 @@ public class GameScreen implements Screen {
 
 			.push(new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHandToCube.txt"))
 			.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHandToCube.txt"));
+		 */
 		
 		animationManager.addAnimation("Fold", fold);
 		animationManager.startAnimation("Fold");

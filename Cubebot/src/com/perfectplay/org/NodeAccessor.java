@@ -59,8 +59,20 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			target.translation.set(newValues[0], newValues[1], newValues[2]);
 			break;
 		case ROTATION:
-			target.rotation.set(convertFromEuler(new Vector3(newValues[0], newValues[1],
-					newValues[2])));
+			Vector3 translation = target.translation.cpy();
+			System.out.println(translation);
+			target.translation.set(0,0,0);
+			System.out.println(translation);
+			target.rotation.setEulerAngles(0, 0, 0);
+			target.calculateLocalTransform();
+			target.localTransform.idt();
+			target.localTransform.setFromEulerAngles(newValues[0], newValues[1],
+					newValues[2]);
+			System.out.println("b " + translation  + " : " + 			target.localTransform);
+			target.localTransform.translate(translation.cpy());
+			target.calculateLocalTransform();
+			target.calculateWorldTransform();
+			//target.rotation.set();
 			break;
 		default:
 			assert false;
