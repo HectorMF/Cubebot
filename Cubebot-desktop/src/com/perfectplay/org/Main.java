@@ -29,6 +29,7 @@ public class Main {
 		cfg.width = config.getInteger("width");
 		cfg.height = config.getInteger("height");
 		cfg.vSyncEnabled = config.getBoolean("vsync");*/
+		cfg.title = "AreaWare Cubebot";
 		cfg.useGL20 = true;
 		//cfg.resizable = false;
 		cfg.width = 1080;

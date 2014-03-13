@@ -93,6 +93,7 @@ public class Cubebot implements InputProcessor {
 	
 	private String selectedNode;
 	
+	
 	public Cubebot() {
 		instances = new HashMap<String, ModelInstance>();
 
@@ -438,6 +439,17 @@ public class Cubebot implements InputProcessor {
 		}
 	}
 
+	public void setColor(Color color){
+		defaultMaterial = ColorAttribute.createDiffuse(color);
+		for(String name : instances.keySet()){
+			instances.get(name).materials.get(0).set(defaultMaterial);
+		}
+	}
+	
+	public void setSelectionColor(Color color){
+		selectedMaterial = ColorAttribute.createDiffuse(color);
+	}
+	
 	public void render() {
 		//clear screen
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
@@ -559,5 +571,11 @@ public class Cubebot implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	public void resize(int width, int height) {
+		cam.viewportHeight = height;
+		cam.viewportWidth = width;
+		cam.update(true);
 	}
 }

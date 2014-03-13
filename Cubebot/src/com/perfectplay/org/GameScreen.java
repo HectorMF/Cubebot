@@ -3,6 +3,7 @@ package com.perfectplay.org;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,6 +20,9 @@ public class GameScreen implements Screen {
 	public GameScreen(final CubebotGame game) {
 		this.game = game;
 		this.bot = new Cubebot();
+		bot.setColor(Color.PINK);
+		bot.setSelectionColor(Color.RED);
+		
 		this.stage = new Stage();
 		Table table = new Table();
 		table.row().fill().expand();
@@ -158,6 +162,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		bot.resize(width,height);
 		stage.setViewport(width, height);
 	}
 
