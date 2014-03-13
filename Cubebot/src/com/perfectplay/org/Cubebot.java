@@ -81,6 +81,7 @@ public class Cubebot implements InputProcessor {
 	private DirectionalShadowLight shadowLight;
 	private Attribute defaultMaterial;
 	private Attribute selectedMaterial;
+	public static HashMap<String, BoundingBox> boundingBoxes;
 	
 	/*
 	 * Bullet Physics
@@ -182,7 +183,7 @@ public class Cubebot implements InputProcessor {
 	private void createBot() {
 		ModelInstance instance;
 		Node node;
-		HashMap<String, BoundingBox> boundingBoxes = new HashMap<String, BoundingBox>();
+		boundingBoxes = new HashMap<String, BoundingBox>();
 
 		/*
 		 * CHEST PIECE

@@ -3,6 +3,7 @@ package com.perfectplay.org;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -33,9 +34,9 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			return 3;
 		case ROTATION:
 			Vector3 euler = convertToEuler(target.rotation);
-			returnValues[0] = euler.x;
-			returnValues[1] = euler.y;
-			returnValues[2] = euler.z;
+			returnValues[0] = (float) Math.toDegrees(euler.x);
+			returnValues[1] = (float) Math.toDegrees(euler.y);
+			returnValues[2] = (float) Math.toDegrees(euler.z);
 			return 4;
 		default:
 			assert false;
@@ -59,26 +60,48 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			target.translation.set(newValues[0], newValues[1], newValues[2]);
 			break;
 		case ROTATION:
-			Vector3 translation = target.translation.cpy();
-			System.out.println(translation);
-			target.translation.set(0,0,0);
-			System.out.println(translation);
-			target.rotation.setEulerAngles(0, 0, 0);
-			target.calculateLocalTransform();
+	/*		target.rotation.set();
+			System.out.println(target.localTransform);
+			
+*/
+			/*
+			Vector3 translation = new Vector3();
+			target.localTransform.getTranslation(translation);
+			Vector3 dim = Cubebot.boundingBoxes.get(target.id).getCenter().cpy();
+			
+			float x = -dim.x;
+			float y = -dim.y;
+			float z = -dim.z;*/
+			target.rotation.set(convertFromEuler(new Vector3((float)Math.toRadians(newValues[0]), (float)Math.toRadians(newValues[1]),
+					(float)Math.toRadians(newValues[2]))));
+
+			//target.rotation.setEulerAngles(newValues[0], newValues[1], newValues[2]);
+			/*
+			System.out.println(newValues[1]);
+			
 			target.localTransform.idt();
-			target.localTransform.setFromEulerAngles(newValues[0], newValues[1],
-					newValues[2]);
-			System.out.println("b " + translation  + " : " + 			target.localTransform);
-			target.localTransform.translate(translation.cpy());
+			target.localTransform.mul(new Matrix4().setToScaling(1, 1, 1));
+			target.localTransform.mul(new Matrix4().setTranslation(x,y,z));
+			target.localTransform.mul(new Matrix4().setFromEulerAngles(newValues[0], newValues[1],
+			newValues[2]));
+			//target.localTransform.mul(new Matrix4().setTranslation(-x,-y,-z));
+			target.localTransform.mul(new Matrix4().setTranslation(translation.x,translation.y,translation.z));
+
+			//System.out.println("A : "+target.localTransform);
+			target.localTransform.getTranslation(target.translation);
+			target.localTransform.getRotation(target.rotation);
+			target.localTransform.getScale(target.scale);
 			target.calculateLocalTransform();
-			target.calculateWorldTransform();
-			//target.rotation.set();
+		//	target.calculateWorldTransform();
+			//System.out.println(target.localTransform);*/
+			
+			//target.rotation.set();*/
 			break;
 		default:
 			assert false;
 			break;
 		}
-		target.calculateTransforms(true);
+		target.calculateTransforms(false);
 	}
 
 	public Quaternion convertFromEuler(Vector3 euler) {
