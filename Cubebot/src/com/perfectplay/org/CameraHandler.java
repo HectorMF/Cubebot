@@ -69,7 +69,7 @@ public class CameraHandler extends CameraInputController{
 			rotation = Tween.to(cam, CameraAccessor.ROTATION, 1).target(0,1,0).start();
 			break;
 		case TOP:
-			tween = Tween.to(cam, CameraAccessor.POSITION, 1).target(0,21, 0).start();
+			tween = Tween.to(cam, CameraAccessor.POSITION, 1).target(0,18, 0).start();
 			rotation = Tween.to(cam, CameraAccessor.ROTATION, 1).target(0,0,1).start();
 			break;
 		default:
