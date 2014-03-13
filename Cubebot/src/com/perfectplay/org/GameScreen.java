@@ -20,8 +20,30 @@ public class GameScreen implements Screen {
 	public GameScreen(final CubebotGame game) {
 		this.game = game;
 		this.bot = new Cubebot();
+		
 		bot.setColor(Color.PINK);
 		bot.setSelectionColor(Color.RED);
+		bot.setColorPiece(Cubebot.Head, Color.GREEN);
+		bot.setColorPiece(Cubebot.Chest, Color.YELLOW);
+		bot.setColorPiece(Cubebot.Pelvis, Color.valueOf("00FFFF"));
+		
+		bot.setColorPiece(Cubebot.LeftLowerArm, Color.valueOf("31f4e3"));
+		bot.setColorPiece(Cubebot.LeftUpperArm, Color.valueOf("f41e98"));
+		bot.setColorPiece(Cubebot.LeftHand, Color.valueOf("e4bb9f"));
+		
+		bot.setColorPiece(Cubebot.LeftLowerLeg, Color.valueOf("FFFF00"));
+		bot.setColorPiece(Cubebot.LeftUpperLeg, Color.valueOf("0033FF"));
+		bot.setColorPiece(Cubebot.LeftFoot, Color.valueOf("6600FF"));
+		
+		bot.setColorPiece(Cubebot.RightLowerArm, Color.MAGENTA);
+		bot.setColorPiece(Cubebot.RightUpperArm, Color.valueOf("009dde"));
+		bot.setColorPiece(Cubebot.RightHand, Color.valueOf("d91548"));
+		
+		bot.setColorPiece(Cubebot.RightLowerLeg, Color.valueOf("FF6633"));
+		bot.setColorPiece(Cubebot.RightUpperLeg, Color.valueOf("663333"));
+		bot.setColorPiece(Cubebot.RightFoot, Color.valueOf("9ede00"));
+		
+		
 		
 		this.stage = new Stage();
 		Table table = new Table();
@@ -103,8 +125,8 @@ public class GameScreen implements Screen {
 		});
 
 		table.add(twoSeventyButton).width(200).height(50).bottom().right()
-				.padRight(50).padBottom(50);
-		
+				.padRight(50).padBottom(10);
+		table.row();
 		TextButton topButton = new TextButton("Top View", game.skin);
 		topButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -112,7 +134,7 @@ public class GameScreen implements Screen {
 				bot.camHandler.setRotation(CameraHandler.TOP);
 			}
 		});
-		table.row();
+		
 		table.add(topButton).width(200).height(50).bottom().right()
 				.padRight(50).padBottom(50);
 

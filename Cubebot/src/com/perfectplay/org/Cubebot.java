@@ -93,10 +93,15 @@ public class Cubebot implements InputProcessor {
 	
 	private String selectedNode;
 	
+	private HashMap<String, Attribute> colorMap;
+	
+	private boolean debugMode;
 	
 	public Cubebot() {
 		instances = new HashMap<String, ModelInstance>();
-
+		colorMap = new HashMap<String, Attribute>();
+		debugMode = false;
+		
 		// set up camera, environment, and input
 		modelBatch = new ModelBatch();
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
@@ -442,8 +447,14 @@ public class Cubebot implements InputProcessor {
 	public void setColor(Color color){
 		defaultMaterial = ColorAttribute.createDiffuse(color);
 		for(String name : instances.keySet()){
+			colorMap.put(name, defaultMaterial);
 			instances.get(name).materials.get(0).set(defaultMaterial);
 		}
+	}
+	
+	public void setColorPiece(String name, Color color){
+		colorMap.put(name, ColorAttribute.createDiffuse(color));
+		instances.get(name).materials.get(0).set(ColorAttribute.createDiffuse(color));
 	}
 	
 	public void setSelectionColor(Color color){
@@ -476,16 +487,23 @@ public class Cubebot implements InputProcessor {
 		shadowLight.end();
 		
 		//bullet debug mode
-		/*modelBatch.begin(cam);
-		for(BulletEntity e : collisionBoxes.values())
-		modelBatch.render(e.modelInstance);
-		modelBatch.end();*/
+		if(debugMode){
+			modelBatch.begin(cam);
+			for(BulletEntity e : collisionBoxes.values())
+				modelBatch.render(e.modelInstance);
+			modelBatch.end();
+		}
+		
 	}
 
 	public Node getNode(String id) {
 		if (instances.containsKey(id))
 			return instances.get(id).nodes.get(0);
 		return null;
+	}
+	
+	public void setDebugMode(boolean bool){
+		debugMode = bool;
 	}
 
 	public void updateCollisionBoxes() {
@@ -541,7 +559,7 @@ public class Cubebot implements InputProcessor {
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		if (rayTestCB.hasHit()) {
 			if(instances.containsKey(selectedNode))
-				instances.get(selectedNode).materials.get(0).set(defaultMaterial);
+				instances.get(selectedNode).materials.get(0).set(colorMap.get(selectedNode));
 			final btCollisionObject obj = rayTestCB.getCollisionObject();
 			final btRigidBody body = (btRigidBody)(obj);
 			selectedNode = (String) body.userData;
