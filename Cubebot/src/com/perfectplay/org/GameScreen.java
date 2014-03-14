@@ -154,11 +154,11 @@ public class GameScreen implements Screen {
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
 		fold.delay(2)
-		.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftLowerArm/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"));
-		/*.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold.txt"))
-		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt"))
-		
+		//.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftLowerArm/Fold1.txt"))
+		//.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"))
+		.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/LeftUpperLeg/Fold1.txt"))
+		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt"));
+		/*
 		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt").setReverse(true))
 		.delay(1)
 		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold.txt").setReverse(true))
