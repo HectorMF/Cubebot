@@ -78,8 +78,7 @@ public class NodeAccessor implements TweenAccessor<Node> {
 					(float)Math.toRadians(newValues[2]%91))));
 			//target.rotation.set(convertFromEuler());
 
-			/*.set(convertFromEuler(new Vector3((float)Math.toRadians(newValues[0]), (float)Math.toRadians(newValues[1]),
-					(float)Math.toRadians(newValues[2]))));
+			/*
 */
 			//target.rotation.setEulerAngles(newValues[0], newValues[1], newValues[2]);
 			/*
