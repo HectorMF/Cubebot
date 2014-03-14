@@ -34,9 +34,9 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			return 3;
 		case ROTATION:
 			Vector3 euler = convertToEuler(target.rotation);
-			returnValues[0] = (float) Math.toDegrees(euler.x);
-			returnValues[1] = (float) Math.toDegrees(euler.y);
-			returnValues[2] = (float) Math.toDegrees(euler.z);
+			returnValues[0] = (float) Math.toDegrees(euler.x)%180;
+			returnValues[1] = (float) Math.toDegrees(euler.y)%180;
+			returnValues[2] = (float) Math.toDegrees(euler.z)%180;
 			return 4;
 		default:
 			assert false;
@@ -72,9 +72,15 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			float x = -dim.x;
 			float y = -dim.y;
 			float z = -dim.z;*/
-			target.rotation.set(convertFromEuler(new Vector3((float)Math.toRadians(newValues[0]), (float)Math.toRadians(newValues[1]),
-					(float)Math.toRadians(newValues[2]))));
+			System.out.println(new Vector3(newValues[0], newValues[1],
+					newValues[2]));
+			target.rotation.set(convertFromEuler(new Vector3((float)Math.toRadians(newValues[0]%91), (float)Math.toRadians(newValues[1]%91),
+					(float)Math.toRadians(newValues[2]%91))));
+			//target.rotation.set(convertFromEuler());
 
+			/*.set(convertFromEuler(new Vector3((float)Math.toRadians(newValues[0]), (float)Math.toRadians(newValues[1]),
+					(float)Math.toRadians(newValues[2]))));
+*/
 			//target.rotation.setEulerAngles(newValues[0], newValues[1], newValues[2]);
 			/*
 			System.out.println(newValues[1]);
@@ -104,7 +110,7 @@ public class NodeAccessor implements TweenAccessor<Node> {
 		target.calculateTransforms(false);
 	}
 
-	public Quaternion convertFromEuler(Vector3 euler) {
+	public static Quaternion convertFromEuler(Vector3 euler) {
 		float heading = euler.x;
 		float attitude = euler.y;
 		float bank = euler.z;
@@ -124,7 +130,7 @@ public class NodeAccessor implements TweenAccessor<Node> {
 		return new Quaternion((float)x, (float)y, (float)z, (float)w);	
 	}
 
-	public Vector3 convertToEuler(Quaternion q1) {
+	public static Vector3 convertToEuler(Quaternion q1) {
 
 		double heading;
 		double attitude;

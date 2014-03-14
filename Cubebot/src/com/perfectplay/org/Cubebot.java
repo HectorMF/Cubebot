@@ -4,7 +4,9 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -38,6 +40,16 @@ import com.perfectplay.org.bullet.BulletWorld;
 @SuppressWarnings("deprecation")
 public class Cubebot implements InputProcessor {
 
+	
+	/*
+	 * 
+	 * SCRIPT WRITING STUFF
+	 */
+	boolean scripting;
+	Matrix4 transform;
+	Vector3 rotation;
+	
+	//String fileName = "TEST.txt";
 	public static final String Chest = "Chest";
 	public static final String Pelvis = "Pelvis";
 	public static final String Head = "Head";
@@ -157,6 +169,7 @@ public class Cubebot implements InputProcessor {
 		 * Environment
 		 */
 		assets.load("Cubebot/Cylinder.g3dj", Model.class);
+		assets.load("Cubebot/Speech.g3dj", Model.class);
 		
 		/*
 		 * Skybox
@@ -385,6 +398,17 @@ public class Cubebot implements InputProcessor {
 		instances.put("RightHand", instance);
 		boundingBoxes.put("RightHand",
 				node.calculateBoundingBox(new BoundingBox()));
+		/*
+		 * Speech Bubble
+		 */
+		instance = new ModelInstance(assets.get("Cubebot/Speech.g3dj",
+				Model.class));
+		node = instance.nodes.get(0);
+		node.rotation.set(new Quaternion(new Vector3(0,1,0),180));
+		node.translation.set(-3.01f, 3.5f, -0.0f);
+		node.scale.set(1, 1, 1);
+		instance.calculateTransforms();
+		instances.put("Speech", instance);
 
 		/*
 		 * Add children to each parent
@@ -443,10 +467,19 @@ public class Cubebot implements InputProcessor {
 			e.body.userData = name;
 			collisionBoxes.put(name, e);
 		}
+		setAttribute(defaultMaterial);
 	}
 
 	public void setColor(Color color){
 		defaultMaterial = ColorAttribute.createDiffuse(color);
+		for(String name : instances.keySet()){
+			colorMap.put(name, defaultMaterial);
+			instances.get(name).materials.get(0).set(defaultMaterial);
+		}
+	}
+	
+	private void setAttribute(Attribute att){
+		defaultMaterial = att;
 		for(String name : instances.keySet()){
 			colorMap.put(name, defaultMaterial);
 			instances.get(name).materials.get(0).set(defaultMaterial);
@@ -478,6 +511,7 @@ public class Cubebot implements InputProcessor {
 		modelBatch.begin(cam);
 		modelBatch.render(pedestal, environment);
 		modelBatch.render(instances.get("Chest"), environment);
+		modelBatch.render(instances.get("Speech"), environment);
 		modelBatch.end();
 		
 		//render shadows
@@ -532,6 +566,93 @@ public class Cubebot implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+	/*	if(keycode == Keys.P){
+			scripting = true;
+			FileHandle file = Gdx.files.local("Animations/" + fileName);
+			file.delete();
+			Quaternion quat = new Quaternion();
+			instances.get(selectedNode).nodes.get(0).localTransform.getRotation(quat);
+			rotation = NodeAccessor.convertToEuler(quat);
+			transform = instances.get(selectedNode).nodes.get(0).localTransform.cpy();
+		}
+		if(selectedNode != ""){
+		if(keycode == Keys.W){
+			instances.get(selectedNode).nodes.get(0).translation.add(0, -.25f, 0);
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		if(keycode == Keys.X){
+			instances.get(selectedNode).nodes.get(0).translation.add(0, .25f, 0);
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		if(keycode == Keys.A){
+			instances.get(selectedNode).nodes.get(0).translation.add(-.25f,0, 0);
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		if(keycode == Keys.D){
+			instances.get(selectedNode).nodes.get(0).translation.add(.25f,0, 0);
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		
+		if(keycode == Keys.Q){
+			instances.get(selectedNode).nodes.get(0).translation.add(0, 0,-.25f);
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		if(keycode == Keys.Z){
+			instances.get(selectedNode).nodes.get(0).translation.add(0,0,.25f);
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		if(keycode == Keys.T){
+			instances.get(selectedNode).nodes.get(0).rotation.mul(new Quaternion(new Vector3(1,0,0),5));
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		if(keycode == Keys.B){
+			instances.get(selectedNode).nodes.get(0).rotation.mul(new Quaternion(new Vector3(1,0,0),-5));
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		if(keycode == Keys.F){
+			instances.get(selectedNode).nodes.get(0).rotation.mul(new Quaternion(new Vector3(0,1,0),5));
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		if(keycode == Keys.H){
+			instances.get(selectedNode).nodes.get(0).rotation.mul(new Quaternion(new Vector3(0,1,0),-5));
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		
+		if(keycode == Keys.R){
+			instances.get(selectedNode).nodes.get(0).rotation.mul(new Quaternion(new Vector3(0,0,1),5));
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+		if(keycode == Keys.V){
+			instances.get(selectedNode).nodes.get(0).rotation.mul(new Quaternion(new Vector3(0,0,1),-5));
+			instances.get(selectedNode).nodes.get(0).calculateTransforms(false);
+		}
+			
+		if(keycode == Keys.K){
+			Matrix4 temp = instances.get(selectedNode).nodes.get(0).localTransform.cpy();
+			Vector3 savedPos = new Vector3();
+			Vector3 pos = new Vector3();
+			temp.getTranslation(pos);
+			transform.cpy().getTranslation(savedPos);
+			FileHandle file = Gdx.files.local("Animations/" + fileName);
+			file.writeString("1::"  +  savedPos.cpy().sub(pos) + "::" + rotation.cpy().sub(pos) + "\n",true);
+			
+			Quaternion quat = new Quaternion();
+			
+			instances.get(selectedNode).nodes.get(0).localTransform.getRotation(quat);
+			Vector3 t = NodeAccessor.convertToEuler(quat);
+			
+			transform = temp.cpy();
+			rotation = t.cpy();
+			System.out.println("1::"  +  savedPos.cpy().sub(pos) + "::" + rotation.cpy().sub(pos));
+		}*/
+	
 		return false;
 	}
 
@@ -547,6 +668,7 @@ public class Cubebot implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
+		//collisionBoxes.get("LeftUpperLeg").body.
 		camHandler.touchDown(x, y, pointer, button);
 		Ray ray = cam.getPickRay(x, y);
 		rayFrom.set(ray.origin);

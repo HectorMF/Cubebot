@@ -28,8 +28,9 @@ public class AnimationSequence implements BaseAnimation{
 	public void start(){
 		if(size > 0){
 			//stop current animation
-			animations.get(currentAnimation).start();
+			animations.get(currentAnimation).pause();
 			animations.get(0).start();
+			animations.get(0).resume();
 			currentAnimation = 0;
 		}
 	}

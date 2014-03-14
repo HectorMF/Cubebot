@@ -20,7 +20,7 @@ public class GameScreen implements Screen {
 	public GameScreen(final CubebotGame game) {
 		this.game = game;
 		this.bot = new Cubebot();
-		
+		/*
 		bot.setColor(Color.PINK);
 		bot.setSelectionColor(Color.RED);
 		bot.setColorPiece(Cubebot.Head, Color.GREEN);
@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
 		bot.setColorPiece(Cubebot.RightLowerLeg, Color.valueOf("FF6633"));
 		bot.setColorPiece(Cubebot.RightUpperLeg, Color.valueOf("663333"));
 		bot.setColorPiece(Cubebot.RightFoot, Color.valueOf("9ede00"));
-		
+		*/
 		
 		
 		this.stage = new Stage();
@@ -153,23 +153,47 @@ public class GameScreen implements Screen {
 
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
-		fold.push(new Animation(bot.getNode(Cubebot.Head), "Animations/HeadTest.txt")).start();
-		/*
-		 * .push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/CubebotTest.txt"))
-			.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmGoToCube.txt"))
-			.delay(2.5f)
-			.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftInnerArmGoToCube.txt"))
-			.push(new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmGoToCube.txt"))
-			.delay(1.5f)
-			.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftOuterArmGoToCube.txt"))
-			.delay(1.2f)
-					.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/RightHandToCube.txt"))
+		fold.delay(2)
+		.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftLowerArm/Fold1.txt"))
+		.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"));
+		/*.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold.txt"))
+		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt"))
+		
+		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt").setReverse(true))
+		.delay(1)
+		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold.txt").setReverse(true))
+*/
+		//		.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftArm/LeftOuterArmGoToCube.txt"))
+	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Rotate90.txt"));
+	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"))
+		//.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateX90.txt"))
+		//.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateX90.txt"));
+		
+		
+		//		.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateY90.txt"))
+	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateY90.txt").setReverse(true))
+		
+	//			.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateZ90.txt"))
+	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateZ90.txt").setReverse(true))
+		
+	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt").setReverse(true));
+		//.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/CubebotTest.txt"))
+		///	.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmGoToCube.txt"))
+		//	.delay(2.5f)
+		//	.push(new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/Test2.txt"));
+		//	
+		//	.delay(2.5f)
+			//.push(new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmGoToCube.txt"))
+		//	.delay(1.5f)
+			//.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftOuterArmGoToCube.txt"))
+		//	.delay(1.2f)
+		//			.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/RightHandToCube.txt"))
 
-			.push(new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHandToCube.txt"))
-			.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHandToCube.txt"));
-		 */
+		//	.push(new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHandToCube.txt"))
+		//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHandToCube.txt"));
 		
 		animationManager.addAnimation("Fold", fold);
+		
 		animationManager.startAnimation("Fold");
 
 	}

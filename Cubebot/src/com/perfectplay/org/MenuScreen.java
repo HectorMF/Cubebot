@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -16,21 +17,31 @@ public class MenuScreen implements Screen
 	final CubebotGame game;
 
     private Stage stage;
+    private SpriteBatch batch;
+    private Texture background;
     
     public MenuScreen(final CubebotGame game) {
         this.game = game;
         this.stage = new Stage();
+        batch = new SpriteBatch();
         Gdx.input.setInputProcessor(stage);
         int width = 200;
         int height = 50;
         
         Image logo = new Image(new Texture(Gdx.files.internal("GUI/Logo.png")));
+        Image cb = new Image(new Texture(Gdx.files.internal("Textures/Cubebot.png")));
+        background = new Texture(Gdx.files.internal("Textures/Background.png"));
         
         Table table = new Table();
 
         table.setFillParent(true);
-        table.add(logo);
-        table.row();
+        table.row().fill().expand();
+        table.add(logo).width(750).height(300);
+      //  table.add(cb).width(444).height(431);
+        
+
+        table.row().fill();
+       // table.add(cb);
         
         /*
          * Play Button
@@ -44,13 +55,14 @@ public class MenuScreen implements Screen
             }
         });
         
-        table.add(playButton).width(width).height(height).padBottom(5);
+        table.add(playButton).width(width).height(height).padBottom(10);
         table.row();
         
         /*
          * Tutorial Button
          * 
-         */
+         *
+         *       
         TextButton tutorialButton = new TextButton("Tutorial", game.skin);
         tutorialButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -60,7 +72,7 @@ public class MenuScreen implements Screen
         });
         table.add(tutorialButton).width(width).height(height).padBottom(5);
         table.row();
-        
+        */
         /*
          * High score Button
          * 
@@ -71,20 +83,22 @@ public class MenuScreen implements Screen
                 game.setScreen(new HighScoreScreen(game));
             }
         });
-        table.add(highScores).width(width).height(height).padBottom(5);
+        table.add(highScores).width(width).height(height).padBottom(10);
         table.row();
+        table.debugTable();
+	    table.debug();
         
         /*
          * Setting Button
-         * 
          */
+         
         TextButton settings = new TextButton("Settings", game.skin);
         settings.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new SettingScreen(game));
             }
         });
-        table.add(settings).width(width).height(height).padBottom(5);
+        table.add(settings).width(width).height(height).padBottom(10);
         table.row();
         
         /*
@@ -97,19 +111,25 @@ public class MenuScreen implements Screen
                 Gdx.app.exit();
             }
         });
-        table.add(quit).width(width).height(height).padBottom(5);
+        table.add(quit).width(width).height(height).padBottom(100);
+       
         stage.addActor(table);
 
     }
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(.5f, .8f, 1, 1);
+		Gdx.gl.glClearColor(0f, 0f, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		batch.draw(background, 0, 0, stage.getWidth(), stage.getHeight(), 0, 0,background.getWidth(),background.getHeight(), false,false);
+		batch.end();
 	    stage.act(Gdx.graphics.getDeltaTime());
 	    stage.draw();
 
-	    //Table.drawDebug(stage);
+	 
+	    
+	   // Table.drawDebug(stage);
 	}
 
 	@Override
