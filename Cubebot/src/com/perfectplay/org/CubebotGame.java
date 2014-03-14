@@ -29,7 +29,7 @@ public class CubebotGame extends Game {
         music = Gdx.audio.newMusic(Gdx.files.internal("Music/POL-air-ducts-long.wav"));
         music.setLooping(true);
         music.setVolume(.1f);
-      //  music.play();
+        music.play();
         this.setScreen(new MenuScreen(this));
         Tween.registerAccessor(Node.class, new NodeAccessor());
         Tween.registerAccessor(PerspectiveCamera.class, new CameraAccessor());
