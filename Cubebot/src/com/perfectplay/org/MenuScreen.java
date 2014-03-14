@@ -25,22 +25,24 @@ public class MenuScreen implements Screen
         this.stage = new Stage();
         batch = new SpriteBatch();
         Gdx.input.setInputProcessor(stage);
-        int width = 200;
+        int width = 300;
         int height = 50;
         
-        Image logo = new Image(new Texture(Gdx.files.internal("GUI/Logo.png")));
+        Image logo = new Image(new Texture(Gdx.files.internal("GUI/Logo1.png")));
         Image cb = new Image(new Texture(Gdx.files.internal("Textures/Cubebot.png")));
         background = new Texture(Gdx.files.internal("Textures/Background.png"));
+        
+        Table tableLogo = new Table();
+
+        tableLogo.setFillParent(true);
+        tableLogo.row().fill().expand();
+        tableLogo.add(logo).width(1000).height(600);
+      //  table.add(cb).width(444).height(431);
         
         Table table = new Table();
 
         table.setFillParent(true);
-        table.row().fill().expand();
-        table.add(logo).width(750).height(300);
-      //  table.add(cb).width(444).height(431);
-        
-
-        table.row().fill();
+        table.row().fill();        
        // table.add(cb);
         
         /*
@@ -55,7 +57,7 @@ public class MenuScreen implements Screen
             }
         });
         
-        table.add(playButton).width(width).height(height).padBottom(10);
+        table.add(playButton).width(width).height(height).padBottom(10).padTop(410);
         table.row();
         
         /*
@@ -102,6 +104,19 @@ public class MenuScreen implements Screen
         table.row();
         
         /*
+         * Buy One Button
+         */
+         
+        TextButton buyOne = new TextButton("Buy One Now!", game.skin);
+        buyOne.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+            	Gdx.net.openURI("http://www.areaware.com/pages/cubebot");
+            }
+        });
+        table.add(buyOne).width(width).height(height).padBottom(10);
+        table.row();
+        
+        /*
          * Quit Button
          * 
          */
@@ -113,6 +128,7 @@ public class MenuScreen implements Screen
         });
         table.add(quit).width(width).height(height).padBottom(100);
        
+        stage.addActor(tableLogo);
         stage.addActor(table);
 
     }
