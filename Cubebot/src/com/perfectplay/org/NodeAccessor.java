@@ -72,8 +72,7 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			float x = -dim.x;
 			float y = -dim.y;
 			float z = -dim.z;*/
-			System.out.println(new Vector3(newValues[0], newValues[1],
-					newValues[2]));
+
 			Matrix4 temp = new Matrix4();
 			temp.setFromEulerAngles((float)Math.toRadians(newValues[0]),(float)Math.toRadians(newValues[1]),(float)Math.toRadians(newValues[2]));
 			

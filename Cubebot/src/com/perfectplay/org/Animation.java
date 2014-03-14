@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -15,11 +14,15 @@ public class Animation implements BaseAnimation {
 
 	private Timeline forwardTimeline;
 	private Timeline reverseTimeline;
-
+	
 	private boolean isReverse;
 	private float delay;
+	private Node node;
+	private String path;
 
 	public Animation(Node node, String filepath) {
+		this.node = node;
+		this.path = filepath;
 		ArrayList<AnimationFrame> Frames = new ArrayList<AnimationFrame>();
 
 		isReverse = false;
@@ -151,9 +154,6 @@ public class Animation implements BaseAnimation {
 	}
 
 	public void update(float delta) {
-		if (forwardTimeline.isFinished() && reverseTimeline.isFinished())
-			return;
-
 		forwardTimeline.update(delta);
 		reverseTimeline.update(delta);
 	}
@@ -168,6 +168,10 @@ public class Animation implements BaseAnimation {
 			this.position = pos;
 			this.rotation = rot;
 		}
+	}
+	
+	public Animation cpy(){
+		return new Animation(node, path).setReverse(isReverse);
 	}
 
 }

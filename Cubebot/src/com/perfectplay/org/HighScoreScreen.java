@@ -24,7 +24,7 @@ public class HighScoreScreen implements Screen{
 	 */
 	private Preferences highscores;
 	private int size;
-	private int min;
+	private float min;
 	private String scores = "";
 	private Stage stage;
 	private CubebotGame game;
@@ -33,23 +33,11 @@ public class HighScoreScreen implements Screen{
 		this.game = game;
 		
 		highscores = Gdx.app.getPreferences("Highscores");
-		highscores.putInteger("size", 10);
-		highscores.putInteger("min", 5);
-		highscores.putString("1", " 1    Hector        10.0 Seconds");
-		highscores.putString("2", " 2    Hector        11.0 Seconds");
-		highscores.putString("3", " 3    Hector        12.2 Seconds");
-		highscores.putString("4", " 4    Hector        13.4 Seconds");
-		highscores.putString("5", " 5    Hector        14.2 Seconds");
-		highscores.putString("6", " 6    Hector        15.4 Seconds");
-		highscores.putString("7", " 7    Hector        16.1 Seconds");
-		highscores.putString("8", " 8    Hector        17.3 Seconds");
-		highscores.putString("9", " 9    Hector        18.1 Seconds");
-		highscores.putString("10","10    Hector     11119.5 Seconds");
-
+		
 		size = highscores.getInteger("size");
-		min = highscores.getInteger("min");
-		for(int i = 1; i <= size; i++)
-			scores += highscores.getString(i + "") + "\n";
+		min = highscores.getFloat("min");
+		for(int i = 1; i <= 10; i++)
+			scores += i  + " : " + highscores.getFloat(i + "") + "\n";
 		this.stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		Table table = new Table();

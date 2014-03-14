@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -36,7 +37,7 @@ public class MenuScreen implements Screen
 
         tableLogo.setFillParent(true);
         tableLogo.row().fill().expand();
-        tableLogo.add(logo).width(1000).height(600);
+        
       //  table.add(cb).width(444).height(431);
         
         Table table = new Table();
@@ -100,21 +101,21 @@ public class MenuScreen implements Screen
                 game.setScreen(new SettingScreen(game));
             }
         });
-        table.add(settings).width(width).height(height).padBottom(10);
-        table.row();
+       // table.add(settings).width(width).height(height).padBottom(10);
+      //  table.row();
         
         /*
          * Buy One Button
          */
          
-        TextButton buyOne = new TextButton("Buy One Now!", game.skin);
+        TextButton buyOne = new TextButton("Click Here to Buy Cubebot®!", game.skin);
         buyOne.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
             	Gdx.net.openURI("http://www.areaware.com/pages/cubebot");
             }
         });
-        table.add(buyOne).width(width).height(height).padBottom(10);
-        table.row();
+        //table.add(buyOne).width(width).height(height).padBottom(10);
+      //  table.row();
         
         /*
          * Quit Button
@@ -126,8 +127,18 @@ public class MenuScreen implements Screen
                 Gdx.app.exit();
             }
         });
-        table.add(quit).width(width).height(height).padBottom(100);
+        table.add(quit).width(width).height(height).padBottom(150);
        
+        TextArea tArea = new TextArea(" \n                                                                                           Click Here to Buy Cubebot®!",game.skin);
+	    tArea.setDisabled(true);
+	    tArea.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+            	Gdx.net.openURI("http://www.areaware.com/pages/cubebot");
+            }
+        });
+	    tableLogo.add(logo).width(1000).height(600).padTop(60);
+	    tableLogo.row();
+        tableLogo.add(tArea).width(900).height(70).padBottom(30);
         stage.addActor(tableLogo);
         stage.addActor(table);
 
@@ -142,10 +153,6 @@ public class MenuScreen implements Screen
 		batch.end();
 	    stage.act(Gdx.graphics.getDeltaTime());
 	    stage.draw();
-
-	 
-	    
-	   // Table.drawDebug(stage);
 	}
 
 	@Override

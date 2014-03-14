@@ -2,6 +2,7 @@ package com.perfectplay.org;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
@@ -104,13 +105,14 @@ public class Cubebot implements InputProcessor {
 	private Vector3 rayFrom = new Vector3();
 	private Vector3 rayTo = new Vector3();
 	
-	private String selectedNode;
+	public String selectedNode;
 	
 	private HashMap<String, Attribute> colorMap;
 	
 	private boolean debugMode;
-	
-	public Cubebot() {
+	private CubebotGame game;
+	public Cubebot(CubebotGame game) {
+		this.game = game;
 		instances = new HashMap<String, ModelInstance>();
 		colorMap = new HashMap<String, Attribute>();
 		debugMode = false;
@@ -511,7 +513,7 @@ public class Cubebot implements InputProcessor {
 		modelBatch.begin(cam);
 		modelBatch.render(pedestal, environment);
 		modelBatch.render(instances.get("Chest"), environment);
-		modelBatch.render(instances.get("Speech"), environment);
+		//modelBatch.render(instances.get("Speech"), environment);
 		modelBatch.end();
 		
 		//render shadows
@@ -566,6 +568,11 @@ public class Cubebot implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if(keycode == Keys.ESCAPE){
+			game.getScreen().dispose();
+			game.setScreen(new MenuScreen(game));
+		}
+			
 	/*	if(keycode == Keys.P){
 			scripting = true;
 			FileHandle file = Gdx.files.local("Animations/" + fileName);
@@ -681,12 +688,61 @@ public class Cubebot implements InputProcessor {
 
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		if (rayTestCB.hasHit()) {
-			if(instances.containsKey(selectedNode))
+			if(instances.containsKey(selectedNode)){
+				if(selectedNode == "LeftUpperLeg" || selectedNode == "LeftLowerLeg" || selectedNode == "LeftFoot"){
+					instances.get("LeftUpperLeg").materials.get(0).set(colorMap.get("LeftUpperLeg"));
+					instances.get("LeftLowerLeg").materials.get(0).set(colorMap.get("LeftLowerLeg"));
+					instances.get("LeftFoot").materials.get(0).set(colorMap.get("LeftFoot"));
+					
+				}
+				if(selectedNode == "RightUpperLeg" || selectedNode == "RightLowerLeg" || selectedNode == "RightFoot")
+				{
+					instances.get("RightUpperLeg").materials.get(0).set(colorMap.get("RightUpperLeg"));
+					instances.get("RightLowerLeg").materials.get(0).set(colorMap.get("RightLowerLeg"));
+					instances.get("RightFoot").materials.get(0).set(colorMap.get("RightFoot"));
+				}
+				if(selectedNode == "RightUpperArm" || selectedNode == "RightLowerArm" || selectedNode == "RightHand"){
+					instances.get("RightUpperArm").materials.get(0).set(colorMap.get("RightUpperArm"));
+					instances.get("RightLowerArm").materials.get(0).set(colorMap.get("RightLowerArm"));
+					instances.get("RightHand").materials.get(0).set(colorMap.get("RightHand"));
+				}
+					
+				if(selectedNode == "LeftUpperArm" || selectedNode == "LeftLowerArm" || selectedNode == "LeftHand")
+				{
+					instances.get("LeftUpperArm").materials.get(0).set(colorMap.get("LeftUpperArm"));
+					instances.get("LeftLowerArm").materials.get(0).set(colorMap.get("LeftLowerArm"));
+					instances.get("LeftHand").materials.get(0).set(colorMap.get("LeftHand"));
+				}
 				instances.get(selectedNode).materials.get(0).set(colorMap.get(selectedNode));
+			}
 			final btCollisionObject obj = rayTestCB.getCollisionObject();
 			final btRigidBody body = (btRigidBody)(obj);
 			selectedNode = (String) body.userData;
-
+			
+			if(selectedNode == "LeftUpperLeg" || selectedNode == "LeftLowerLeg" || selectedNode == "LeftFoot"){
+				instances.get("LeftUpperLeg").materials.get(0).set(selectedMaterial);
+				instances.get("LeftLowerLeg").materials.get(0).set(selectedMaterial);
+				instances.get("LeftFoot").materials.get(0).set(selectedMaterial);
+				
+			}
+			if(selectedNode == "RightUpperLeg" || selectedNode == "RightLowerLeg" || selectedNode == "RightFoot")
+			{
+				instances.get("RightUpperLeg").materials.get(0).set(selectedMaterial);
+				instances.get("RightLowerLeg").materials.get(0).set(selectedMaterial);
+				instances.get("RightFoot").materials.get(0).set(selectedMaterial);
+			}
+			if(selectedNode == "RightUpperArm" || selectedNode == "RightLowerArm" || selectedNode == "RightHand"){
+				instances.get("RightUpperArm").materials.get(0).set(selectedMaterial);
+				instances.get("RightLowerArm").materials.get(0).set(selectedMaterial);
+				instances.get("RightHand").materials.get(0).set(selectedMaterial);
+			}
+				
+			if(selectedNode == "LeftUpperArm" || selectedNode == "LeftLowerArm" || selectedNode == "LeftHand")
+			{
+				instances.get("LeftUpperArm").materials.get(0).set(selectedMaterial);
+				instances.get("LeftLowerArm").materials.get(0).set(selectedMaterial);
+				instances.get("LeftHand").materials.get(0).set(selectedMaterial);
+			}
 			instances.get(selectedNode).materials.get(0).set(selectedMaterial);
 		}
 		return true;

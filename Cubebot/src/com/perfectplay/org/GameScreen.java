@@ -2,24 +2,38 @@ package com.perfectplay.org;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameScreen implements Screen {
+	private Preferences highscores;
 	final CubebotGame game;
 	private Cubebot bot;
-	private AnimationManager animationManager;
+	private CubebotAnimation animations;
 	private Stage stage;
-
+	private TextButton fold;
+	private TextButton unfold;
+	private float time;
+	private TextArea timer;
+	private boolean done;
+	private Table dialog;
 	public GameScreen(final CubebotGame game) {
 		this.game = game;
-		this.bot = new Cubebot();
+		this.bot = new Cubebot(game);
+		this.animations = new CubebotAnimation(bot);
+		done = false;
 		/*
 		bot.setColor(Color.PINK);
 		bot.setSelectionColor(Color.RED);
@@ -47,7 +61,7 @@ public class GameScreen implements Screen {
 		
 		this.stage = new Stage();
 		Table table = new Table();
-		table.row().fill().expand();
+		table.row().fill().expand().colspan(3);
 		table.setFillParent(true);
 		TextButton resetButton = new TextButton("Reset", game.skin);
 		resetButton.addListener(new ClickListener() {
@@ -58,24 +72,24 @@ public class GameScreen implements Screen {
 			}
 		});
 
-		table.add(resetButton).width(200).height(50).bottom().right()
-				.padRight(50).padBottom(10);
+		//table.add(resetButton).width(200).height(50).bottom().right()
+		//		.padRight(50).padBottom(10);
 
-		table.row();
-
+		
 		TextButton menuButton = new TextButton("Menu", game.skin);
-		menuButton.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y) {
+		menuButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
 				game.buttonPress.play();
 				game.getScreen().dispose();
 				game.setScreen(new MenuScreen(game));
 			}
 		});
-
-		table.add(menuButton).width(200).height(50).bottom().right()
-				.padRight(50).padBottom(10);
+		menuButton.setDisabled(true);
+		//table.add(menuButton).width(200).height(50).bottom().right()
+		//		.padRight(50).padBottom(10);
 		
-		table.row();
+	
 		
 		TextButton zeroButton = new TextButton("Front View", game.skin);
 		zeroButton.addListener(new ClickListener() {
@@ -84,11 +98,10 @@ public class GameScreen implements Screen {
 				bot.camHandler.setRotation(CameraHandler.FRONT);
 			}
 		});
-
-		table.add(zeroButton).width(200).height(50).bottom().right()
+		table.add(zeroButton).width(150).height(50).bottom().right()
 				.padRight(50).padBottom(10);
 
-		table.row();
+		table.row().colspan(3);
 		
 		TextButton ninetyButton = new TextButton("Left View", game.skin);
 		ninetyButton.addListener(new ClickListener() {
@@ -98,11 +111,10 @@ public class GameScreen implements Screen {
 			}
 		});
 
-		table.add(ninetyButton).width(200).height(50).bottom().right()
+		table.add(ninetyButton).width(150).height(50).bottom().right()
 				.padRight(50).padBottom(10);
 
-		table.row();
-		
+		table.row().colspan(3);;
 		TextButton oneEightyButton = new TextButton("Right View", game.skin);
 		oneEightyButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -111,10 +123,10 @@ public class GameScreen implements Screen {
 			}
 		});
 
-		table.add(oneEightyButton).width(200).height(50).bottom().right()
+		table.add(oneEightyButton).width(150).height(50).bottom().right()
 				.padRight(50).padBottom(10);
 
-		table.row();
+		table.row().colspan(3);
 		
 		TextButton twoSeventyButton = new TextButton("Back View", game.skin);
 		twoSeventyButton.addListener(new ClickListener() {
@@ -124,9 +136,9 @@ public class GameScreen implements Screen {
 			}
 		});
 
-		table.add(twoSeventyButton).width(200).height(50).bottom().right()
+		table.add(twoSeventyButton).width(150).height(50).bottom().right()
 				.padRight(50).padBottom(10);
-		table.row();
+		table.row().colspan(3);;
 		TextButton topButton = new TextButton("Top View", game.skin);
 		topButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -135,106 +147,156 @@ public class GameScreen implements Screen {
 			}
 		});
 		
-		table.add(topButton).width(200).height(50).bottom().right()
-				.padRight(50).padBottom(50);
+		
+		
+		
+		fold = new TextButton("Fold", game.skin);
+		fold.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				game.buttonPress.play();
+				if(bot.selectedNode != ""){
+					animations.fold(animations.getType(bot.selectedNode));
+				}
+			}
+		});
 
 		
+		
 
+		unfold = new TextButton("Unfold", game.skin);
+		unfold.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				game.buttonPress.play();
+				if(bot.selectedNode != ""){
+					animations.unfold(animations.getType(bot.selectedNode));
+				}
+			}
+		});
+		table.row().colspan(3);
+		
+		table.add(topButton).width(150).height(50).bottom().right()
+		.padRight(50).padBottom(25);
+
+
+
+		Table tab = new Table();
+		tab.setFillParent(true);
+		tab.row().expand(0,1);
+		tab.add();
+		tab.row().width(500).height(56).bottom().padBottom(50);
+		//tab.setFillParent(true);
+		tab.add(fold).width(200).height(50).bottom().padRight(10).padBottom(25);
+		tab.add(unfold).width(200).bottom().height(50).padRight(0).padBottom(25);
+
+
+		Table tabl = new Table();
+		tabl.setFillParent(true);
+		tabl.row().expand(1,1);
+		timer = new TextArea("", game.skin);
+		tabl.add(timer).width(150).height(26).top().right().padRight(50).padTop(25);
 		InputMultiplexer inputMux = new InputMultiplexer();
 		inputMux.addProcessor(bot);
 		inputMux.addProcessor(0, stage);
-		//inputMux.addProcessor(bot.getCamController());
-		//inputMux.addProcessor(stage);
 		Gdx.input.setInputProcessor(inputMux);
+		dialog = new Table();
+		dialog.setFillParent(true);
+		table.row().expand();
+		
 		stage.addActor(table);
-
-		animationManager = new AnimationManager();
-		
-		/*//Go To Cube Scripts*/
-		AnimationSequence fold = new AnimationSequence();
-		fold.delay(2)
-		.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftLowerArm/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftUpperArm/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/Fold2.txt"))
-		//.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/LeftUpperLeg/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.LeftFoot), "Animations/LeftFoot/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.LeftLowerLeg), "Animations/LeftLowerLeg/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/LeftUpperLeg/Fold1.txt"));
-		
-		
-		AnimationSequence fold2 = new AnimationSequence();
-		fold2.delay(2)
-						.push(new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHand/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/RightLowerArm/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightUpperArm/Fold1.txt"))
-		//.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftLowerArm/Fold1.txt"))
-		//.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"))
-		//.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/LeftUpperLeg/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/RightFoot/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.RightLowerLeg), "Animations/RightLowerLeg/Fold1.txt"))
-		.push(new Animation(bot.getNode(Cubebot.RightUpperLeg), "Animations/RightUpperLeg/Fold1.txt"));
-
-		//.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftUpperArm/Fold1.txt"));
-		//.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt"));
-		/*
-		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt").setReverse(true))
-		.delay(1)
-		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold.txt").setReverse(true))
-*/
-		//		.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftArm/LeftOuterArmGoToCube.txt"))
-	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Rotate90.txt"));
-	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"))
-		//.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateX90.txt"))
-		//.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateX90.txt"));
-		
-		
-		//		.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateY90.txt"))
-	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateY90.txt").setReverse(true))
-		
-	//			.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateZ90.txt"))
-	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/RotateZ90.txt").setReverse(true))
-		
-	//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt").setReverse(true));
-		//.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/CubebotTest.txt"))
-		///	.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightInnerArmGoToCube.txt"))
-		//	.delay(2.5f)
-		//	.push(new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/Test2.txt"));
-		//	
-		//	.delay(2.5f)
-			//.push(new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/RightOuterArmGoToCube.txt"))
-		//	.delay(1.5f)
-			//.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftOuterArmGoToCube.txt"))
-		//	.delay(1.2f)
-		//			.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/RightHandToCube.txt"))
-
-		//	.push(new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHandToCube.txt"))
-		//	.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHandToCube.txt"));
-		
-		animationManager.addAnimation("Fold", fold);
-		
-		animationManager.startAnimation("Fold");
-		animationManager.addAnimation("Fold2", fold2);
-		
-		animationManager.startAnimation("Fold2");
+		stage.addActor(tab);
+		stage.addActor(tabl);
+		stage.addActor(dialog);
 
 	}
 
 	@Override
 	public void render(float delta) {
+		if(!done)
+		time+=delta;
+		String temp = (Math.round(time*10))/10f +"";
+		String v = "";
+		while(v.length() + temp.length() < 30)
+			v += " ";
+		v+= temp;
+		timer.setText(v  + "");
 		Gdx.gl.glClearColor(.5f, .8f, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		String val = animations.getState(animations.getType(bot.selectedNode));
+		if(val != null){
+			if(val.equals("F")){
+				unfold.setDisabled(false);
+				fold.setDisabled(true);
+			}else if(val.equals("UF")){
+				fold.setDisabled(false);
+				unfold.setDisabled(true);
+			}else{
+				fold.setDisabled(true);
+				unfold.setDisabled(true);
+			}
+		}else{
+			fold.setDisabled(true);
+			unfold.setDisabled(true);
+		}
+		stage.act(Gdx.graphics.getDeltaTime());
 		bot.render();
 		stage.draw();
-		stage.act(Gdx.graphics.getDeltaTime());
-		animationManager.update(delta);
+		animations.update(delta);
+		if(animations.isFolded() && !done){
+			
+			highscores = Gdx.app.getPreferences("Highscores");
+			float min  = highscores.getFloat("min");
+			
+			if(min == 0 || time < min){
+				int pos = 1;
+				float tempVal = 0;
+				for(int i = 1; i <= 10; i++)
+				{
+					float t = highscores.getFloat(i+"");
+					if(time < t || t == 0 ){
+						highscores.putFloat(i+"",time);
+						tempVal = t;
+						pos = i;
+						break;
+						
+					}
+				}
+				for(int i = pos+1; i <= 10; i++){
+					float p = highscores.getFloat(i+"");
+					highscores.putFloat(i+"", tempVal);
+					tempVal = p;
+				}
+				highscores.putFloat("min", highscores.getFloat("10"));
+			}
+			highscores.flush();
+			done = true;
+			Dialog finished = new Dialog("Cubebot",game.skin,"dialog");
+			finished.text("You have folded the Cubebot in: \n" + v + " Seconds!");
+			TextButton yes = new TextButton("Ok", game.skin);
+			yes.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.buttonPress.play();
+				game.getScreen().dispose();
+				game.setScreen(new HighScoreScreen(game));
+				}
+			});
+			yes.setWidth(100);
+			yes.setHeight(20);
+			finished.setWidth(300);
+			finished.button(yes,true).size(100, 20);;
+			finished.center();
+			finished.pack();
+			finished.align(Align.center);
+			dialog.add(finished)
+;		}
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		bot.resize(width,height);
 		stage.setViewport(width, height);
+		
 	}
 
 	@Override
