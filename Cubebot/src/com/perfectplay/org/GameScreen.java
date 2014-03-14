@@ -149,8 +149,7 @@ public class GameScreen implements Screen {
 		stage.addActor(table);
 
 		animationManager = new AnimationManager();
-
-
+		
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
 		fold.delay(2)

@@ -37,11 +37,7 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			returnValues[0] = (float) Math.toDegrees(euler.x);
 			returnValues[1] = (float) Math.toDegrees(euler.y);
 			returnValues[2] = (float) Math.toDegrees(euler.z);
-<<<<<<< HEAD
-			return 4;
-=======
 			return 3;
->>>>>>> ec97054c78a4009439dbac63e0a27e744fe59380
 		default:
 			assert false;
 			return -1;
