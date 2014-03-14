@@ -154,6 +154,9 @@ public class GameScreen implements Screen {
 		/*//Go To Cube Scripts*/
 		AnimationSequence fold = new AnimationSequence();
 		fold.delay(2)
+		.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"))
+		.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftLowerArm/Fold1.txt"))
+		.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftUpperArm/Fold1.txt"))
 		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/Fold1.txt"))
 		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/Fold2.txt"))
 		//.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/LeftUpperLeg/Fold1.txt"))
@@ -164,12 +167,18 @@ public class GameScreen implements Screen {
 		
 		AnimationSequence fold2 = new AnimationSequence();
 		fold2.delay(2)
+						.push(new Animation(bot.getNode(Cubebot.RightHand), "Animations/RightHand/Fold1.txt"))
+		.push(new Animation(bot.getNode(Cubebot.RightLowerArm), "Animations/RightLowerArm/Fold1.txt"))
+		.push(new Animation(bot.getNode(Cubebot.RightUpperArm), "Animations/RightUpperArm/Fold1.txt"))
 		//.push(new Animation(bot.getNode(Cubebot.LeftLowerArm), "Animations/LeftLowerArm/Fold1.txt"))
 		//.push(new Animation(bot.getNode(Cubebot.LeftHand), "Animations/LeftHand/Fold1.txt"))
 		//.push(new Animation(bot.getNode(Cubebot.LeftUpperLeg), "Animations/LeftUpperLeg/Fold1.txt"))
 		.push(new Animation(bot.getNode(Cubebot.RightFoot), "Animations/RightFoot/Fold1.txt"))
 		.push(new Animation(bot.getNode(Cubebot.RightLowerLeg), "Animations/RightLowerLeg/Fold1.txt"))
 		.push(new Animation(bot.getNode(Cubebot.RightUpperLeg), "Animations/RightUpperLeg/Fold1.txt"));
+
+		//.push(new Animation(bot.getNode(Cubebot.LeftUpperArm), "Animations/LeftUpperArm/Fold1.txt"));
+		//.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt"));
 		/*
 		.push(new Animation(bot.getNode(Cubebot.Head), "Animations/Head/HeadFold2.txt").setReverse(true))
 		.delay(1)
