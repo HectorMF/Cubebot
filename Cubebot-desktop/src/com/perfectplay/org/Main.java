@@ -1,5 +1,6 @@
 package com.perfectplay.org;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -27,6 +28,9 @@ public class Main {
 		cfg.title = "AREAWARE Cubebot";
 		cfg.useGL20 = true;
 		//cfg.resizable = false;
+		cfg.addIcon("Textures/16.png", FileType.Local);
+		cfg.addIcon("Textures/32.png", FileType.Local);
+		cfg.addIcon("Textures/128.png", FileType.Local);
 		cfg.width = 1080;
 		cfg.height = 760;
 	//	new LwjglApplication(new RayPickRagdollTest(), cfg);
