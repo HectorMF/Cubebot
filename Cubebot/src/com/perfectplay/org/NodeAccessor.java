@@ -34,9 +34,9 @@ public class NodeAccessor implements TweenAccessor<Node> {
 			return 3;
 		case ROTATION:
 			Vector3 euler = convertToEuler(target.rotation);
-			returnValues[0] = (float) Math.toDegrees(euler.x)%180;
-			returnValues[1] = (float) Math.toDegrees(euler.y)%180;
-			returnValues[2] = (float) Math.toDegrees(euler.z)%180;
+			returnValues[0] = (float) Math.toDegrees(euler.x);
+			returnValues[1] = (float) Math.toDegrees(euler.y);
+			returnValues[2] = (float) Math.toDegrees(euler.z);
 			return 4;
 		default:
 			assert false;
