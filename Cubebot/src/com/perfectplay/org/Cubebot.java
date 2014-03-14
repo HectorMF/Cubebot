@@ -404,8 +404,8 @@ public class Cubebot implements InputProcessor {
 		instance = new ModelInstance(assets.get("Cubebot/Speech.g3dj",
 				Model.class));
 		node = instance.nodes.get(0);
-		node.rotation.set(new Quaternion(new Vector3(0,1,0),180));
-		node.translation.set(-3.01f, 3.5f, -0.0f);
+		node.rotation.set(new Quaternion(new Vector3(0,0,1),90).mul(new Quaternion(new Vector3(0,1,0),90)));
+		node.translation.set(-2.01f, 3.5f, -0.0f);
 		node.scale.set(1, 1, 1);
 		instance.calculateTransforms();
 		instances.put("Speech", instance);
