@@ -16,7 +16,6 @@
 
 package com.perfectplay.org.bullet;
 
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -65,11 +64,13 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 		this(model, -1f);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void create (final Model model, final float mass, final float width, final float height, final float depth) {
 		// Create a simple boxshape
 		create(model, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
 	}
 
+	@SuppressWarnings("deprecation")
 	private void create (final Model model, final float mass, final btCollisionShape shape) {
 		this.model = model;
 		this.shape = shape;

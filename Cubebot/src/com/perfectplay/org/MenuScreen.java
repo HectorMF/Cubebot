@@ -30,7 +30,6 @@ public class MenuScreen implements Screen
         int height = 50;
         
         Image logo = new Image(new Texture(Gdx.files.internal("GUI/Logo1.png")));
-        Image cb = new Image(new Texture(Gdx.files.internal("Textures/Cubebot.png")));
         background = new Texture(Gdx.files.internal("Textures/Background.png"));
         
         Table tableLogo = new Table();

@@ -1,10 +1,5 @@
 package com.perfectplay.org;
 
-import org.lwjgl.opengl.DisplayMode;
-
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -29,7 +24,7 @@ public class Main {
 		cfg.width = config.getInteger("width");
 		cfg.height = config.getInteger("height");
 		cfg.vSyncEnabled = config.getBoolean("vsync");*/
-		cfg.title = "AreaWare Cubebot";
+		cfg.title = "AREAWARE Cubebot";
 		cfg.useGL20 = true;
 		//cfg.resizable = false;
 		cfg.width = 1080;
