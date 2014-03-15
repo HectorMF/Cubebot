@@ -36,8 +36,9 @@ public class HighScoreScreen implements Screen {
 
 		highscores.getInteger("size");
 		highscores.getFloat("min");
-		for (int i = 1; i <= 10; i++)
-			scores += i + " : " + highscores.getFloat(i + "") + "\n";
+		for (int i = 1; i < 10; i++)
+			scores += "                              " + i + " :  " +  Math.round(highscores.getFloat(i + "")*100)/100f + " Seconds\n";
+		scores += "                            " + 10 + " :  " + Math.round(highscores.getFloat(10 + "")*100)/100f + " Seconds\n";
 		this.stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		Table table = new Table();
