@@ -686,7 +686,7 @@ public class Cubebot implements InputProcessor {
 
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		if (rayTestCB.hasHit()) {
-			if(instances.containsKey(selectedNode)){
+			if(instances.containsKey(selectedNode))/*{
 				if(selectedNode == "LeftUpperLeg" || selectedNode == "LeftLowerLeg" || selectedNode == "LeftFoot"){
 					instances.get("LeftUpperLeg").materials.get(0).set(colorMap.get("LeftUpperLeg"));
 					instances.get("LeftLowerLeg").materials.get(0).set(colorMap.get("LeftLowerLeg"));
@@ -710,13 +710,14 @@ public class Cubebot implements InputProcessor {
 					instances.get("LeftUpperArm").materials.get(0).set(colorMap.get("LeftUpperArm"));
 					instances.get("LeftLowerArm").materials.get(0).set(colorMap.get("LeftLowerArm"));
 					instances.get("LeftHand").materials.get(0).set(colorMap.get("LeftHand"));
-				}
+				}*/
 				instances.get(selectedNode).materials.get(0).set(colorMap.get(selectedNode));
-			}
+			//}
 			final btCollisionObject obj = rayTestCB.getCollisionObject();
 			final btRigidBody body = (btRigidBody)(obj);
 			selectedNode = (String) body.userData;
 			
+			/*
 			if(selectedNode == "LeftUpperLeg" || selectedNode == "LeftLowerLeg" || selectedNode == "LeftFoot"){
 				instances.get("LeftUpperLeg").materials.get(0).set(selectedMaterial);
 				instances.get("LeftLowerLeg").materials.get(0).set(selectedMaterial);
@@ -741,6 +742,7 @@ public class Cubebot implements InputProcessor {
 				instances.get("LeftLowerArm").materials.get(0).set(selectedMaterial);
 				instances.get("LeftHand").materials.get(0).set(selectedMaterial);
 			}
+			*/
 			instances.get(selectedNode).materials.get(0).set(selectedMaterial);
 		}
 		return true;
