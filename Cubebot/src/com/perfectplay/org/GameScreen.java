@@ -1,5 +1,7 @@
 package com.perfectplay.org;
 
+import javax.xml.stream.events.StartDocument;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
@@ -12,9 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.sun.corba.se.spi.orbutil.fsm.State;
 
 public class GameScreen implements Screen {
 	private Preferences highscores;
@@ -28,6 +32,8 @@ public class GameScreen implements Screen {
 	private TextArea timer;
 	private boolean done;
 	private Table dialog;
+	private float started;
+	private Dialog start;
 	public GameScreen(final CubebotGame game) {
 		this.game = game;
 		this.bot = new Cubebot(game);
@@ -173,6 +179,16 @@ public class GameScreen implements Screen {
 				}
 			}
 		});
+		
+		TextButton menu = new TextButton("Menu", game.skin);
+		menu.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				game.buttonPress.play();
+				game.getScreen().dispose();
+				game.setScreen(new MenuScreen(game));
+			}
+		});
 		table.row().colspan(3);
 		
 		table.add(topButton).width(150).height(50).bottom().right()
@@ -194,6 +210,8 @@ public class GameScreen implements Screen {
 		tabl.setFillParent(true);
 		tabl.row().expand(1,1);
 		timer = new TextArea("", game.skin);
+		tabl.add(menu).width(65).top().left().padLeft(15).padTop(15);
+		
 		tabl.add(timer).width(150).height(26).top().right().padRight(50).padTop(25);
 		InputMultiplexer inputMux = new InputMultiplexer();
 		inputMux.addProcessor(bot);
@@ -207,13 +225,21 @@ public class GameScreen implements Screen {
 		stage.addActor(tab);
 		stage.addActor(tabl);
 		stage.addActor(dialog);
+		start = new Dialog("Cubebot!",game.skin);
+		start.text("\n   Fold the Cubebot as fast as you can!   ");
+		start.setWidth(500);
+		start.setHeight(200);
+		start.padTop(20).padBottom(20);
+		dialog.add(start);
 
 	}
 
 	@Override
 	public void render(float delta) {
-		if(!done)
-		time+=delta;
+		started += delta;
+		if(!done && started >= 5){
+			time+=delta;
+		}
 		String temp = (Math.round(time*10))/10f +"";
 		String v = "";
 		while(v.length() + temp.length() < 30)
@@ -287,8 +313,12 @@ public class GameScreen implements Screen {
 			finished.center();
 			finished.pack();
 			finished.align(Align.center);
-			dialog.add(finished)
-;		}
+			dialog.add(finished);
+		}
+		
+		if(started >= 5){
+			dialog.removeActor(start);
+		}
 	}
 
 	@Override

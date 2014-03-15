@@ -39,7 +39,6 @@ import com.perfectplay.org.bullet.BulletWorld;
 @SuppressWarnings("deprecation")
 public class Cubebot implements InputProcessor {
 
-	
 	/*
 	 * 
 	 * SCRIPT WRITING STUFF
@@ -119,10 +118,10 @@ public class Cubebot implements InputProcessor {
 		modelBatch = new ModelBatch();
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f,
-				0.4f, 0.4f, .1f));
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, .8f,
+				0.8f, 0.8f, .01f));
 		//environment.add(new DirectionalLight().set(.8f, 0.8f, 0.8f, 0, .4f, -4f));
-		environment.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, .4f, -.8f, 2f));
+		environment.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 80f)).set(0.4f, 0.4f, 0.4f, .4f, -.8f, 2f));
 			environment.shadowMap = shadowLight;
 
 		
