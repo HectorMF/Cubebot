@@ -1,4 +1,5 @@
-Cubebot
+Cubebot Game
 =======
 
-Cubebot Application
+Application developed for AREAWARE(http://www.areaware.com/) for their Cubebot product.
+
